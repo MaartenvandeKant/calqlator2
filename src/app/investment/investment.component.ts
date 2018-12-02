@@ -24,14 +24,11 @@ export class InvestmentComponent implements OnInit {
     {rangeLow:5000,rangeHigh:10000,rangeStep:1000},
     {rangeLow:10000,rangeHigh:100000,rangeStep:10000},
 
-    
   ]);
   recurringDepositStepRange: number[] = this.createStepRange([
     {rangeLow:0,rangeHigh:250,rangeStep:10},
     {rangeLow:250,rangeHigh:1000,rangeStep:50},
-    {rangeLow:1000,rangeHigh:5000,rangeStep:200}
-
-    
+    {rangeLow:1000,rangeHigh:5000,rangeStep:200}    
   ]);
   
   periodOptions: Options =  {
