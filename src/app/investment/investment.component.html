@@ -1,0 +1,101 @@
+<mat-card class="iot-card">
+    <mat-card-header>
+        
+        <mat-card-title>my first Investment Oriantation Tool</mat-card-title>
+        <mat-card-subtitle>user settings</mat-card-subtitle>
+      </mat-card-header>
+<mat-card-content>
+
+
+<p align="center">Period: {{period}} year
+  <ng5-slider [(value)]="period" [options]="periodOptions" (valueChange)="recalculate()"></ng5-slider>
+</p>
+
+
+<p align="center"> {{transactions}} transactions per year
+  <ng5-slider [(value)]="transactions" [options]="transactionOptions" (valueChange)="recalculate()"></ng5-slider>
+</p>  
+<p align="center">
+{{oneTimeDeposit | currency:"EUR" }} One Time Deposit
+<ng5-slider [(value)]="oneTimeDeposit" [options]="oneTimeDepositOptions" (valueChange)="recalculate()"></ng5-slider>
+</p>
+<p align="center">Recurring Deposit: {{recurringDeposit| currency:"EUR"}}
+<ng5-slider [(value)]="recurringDeposit" [options]="recurringDepositOptions" (valueChange)="recalculate()"></ng5-slider>
+</p>
+</mat-card-content>
+</mat-card>
+
+
+<mat-card class="iot-card">
+    <mat-card-header>
+        
+        <mat-card-subtitle>cost calucation</mat-card-subtitle>
+      </mat-card-header>
+<mat-card-content>
+
+  <table >
+    <th>year</th> 
+    <th>assets</th> 
+    <th>cummulative</th> 
+    <th>Fixed Service Fee</th>
+    <th>Variable Service Fee</th>
+    <th>Transaction Cost</th>
+    <th>Transaction Discount</th>
+    <th>Tax</th>
+    <th>Currency Cost</th>
+<tr *ngFor="let p of portfolio">
+  <td>{{p.year}}</td>
+  <td>{{p.asset | currency:"EUR"}}</td>
+  <td>{{p.cumAsset | currency:"EUR"}}</td>
+  <td>{{p.variableServiceFee | currency:"EUR"}}</td>
+  <td>{{p.fixedServiceFee | currency:"EUR"}}</td>
+  <td>{{p.txCost | currency:"EUR"}}</td>
+  <td>{{p.txDiscount | currency:"EUR"}}</td>
+  <td>{{p.tax | currency:"EUR"}}</td>
+  <td>{{p.currencyCost | currency:"EUR"}}</td>
+</tr>
+
+  </table>
+
+</mat-card-content>
+</mat-card>
+
+<mat-card class="iot-card">
+    <mat-card-header>
+        
+        <mat-card-subtitle>Json Configurations</mat-card-subtitle>
+      </mat-card-header>
+<mat-card-content>
+
+<mat-accordion>
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          Portfolio Configuration json (single product)
+        </mat-panel-title>
+        
+      </mat-expansion-panel-header>
+      
+      <mat-form-field class="example-full-width">
+          <textarea rows="20" matInput placeholder="portfolio" value="{{portfolioJson| json}}"></textarea>
+        </mat-form-field>
+  
+      
+    </mat-expansion-panel>
+    <mat-expansion-panel (opened)="panelOpenState = true"
+                         (closed)="panelOpenState = false">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          Price Configuration Json
+        </mat-panel-title>
+        
+      </mat-expansion-panel-header>
+      <mat-form-field class="example-full-width">
+          <textarea rows="20" matInput placeholder="price" value="{{priceJson| json}}"></textarea>
+        </mat-form-field>
+  
+    </mat-expansion-panel>
+  </mat-accordion>
+
+</mat-card-content>
+</mat-card>

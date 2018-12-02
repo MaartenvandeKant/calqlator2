@@ -1,0 +1,58 @@
+{
+    "priceList": [
+      {
+        "instrumentName": "Dutch Shares",
+        "costType": "variable",
+        "minCost": 1,
+        "maxCost": 2,
+        "costPercentage" : "0.2"
+      },
+      {
+        "instrumentName": "English Shares",
+        "costType": "fixed",
+        "cost": 8
+      },
+      {
+        "instrumentName": "Irish Shares",
+        "costType": "variable",
+        "minCost": 10,
+        "maxCost": 100,
+        "costPercentage" : "0.01"
+      },
+      {
+        "instrumentName": "ETF",
+        "costType": "fixed",
+        "cost": 4
+      },
+      {
+        "instrumentName": "Fund",
+        "costType": "fixed",
+        "cost": 10
+      }
+
+      
+    ],
+    "tax" : 0.001,
+    "currency" : 0.002,
+    "discountLevels": [
+      {
+        "lowerBand": 0,
+        "upperBand": 100,
+        "variableDiscount" : 0.5
+      },
+      {
+        "lowerBand": 100,
+        "upperBand": 500,
+        "variableDiscount" : 0.1
+      },
+      {
+        "lowerBand": 500,
+        "upperBand": 1000000000000,
+        "variableDiscount" : 0.002
+      }
+      
+      
+    ],
+    "variableServiceFeePercentage": 0.01,
+    "fixedMonthlyServiceFee" : 10
+  }

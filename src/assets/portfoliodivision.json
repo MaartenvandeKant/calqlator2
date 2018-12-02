@@ -1,0 +1,13 @@
+{
+    "portfolioDevision": [
+      {
+        "assetName": "Dutch Shares",
+        "percentage": 1
+      },
+      {
+        "assetName": "ETF",
+        "percentage": 0
+      }
+      
+    ]
+  }
