@@ -1,10 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { ConfigService } from '../iot.service';
-import { StepperSelectionEvent } from '@angular/cdk/stepper';
+import { Options } from 'ng5-slider';
 
 
-
-
+// to do comments
+// to do testing
+// to do load cost for multiple risk levels
+// to do load cost for multiple products
+// to do remove un-used variables 
 
 @Component({
   selector: 'app-investment',
@@ -32,7 +35,6 @@ export class InvestmentComponent implements OnInit {
   ]);
   
   periodOptions: Options =  {
-    id: 'period',
     minLimit: 2,
     floor: 0,
     ceil: 42,
@@ -42,7 +44,6 @@ export class InvestmentComponent implements OnInit {
   };
 
   transactionOptions: Options =  {
-    id: 'period',
     floor: 0,
     ceil: 300,
     showTicks: false,
@@ -51,7 +52,6 @@ export class InvestmentComponent implements OnInit {
   };
 
   oneTimeDepositOptions: Options =  {
-    id: 'oneTimeDeposit',
     showTicks: false,
     showTicksValues: false,
     showSelectionBar: true,
@@ -64,8 +64,35 @@ export class InvestmentComponent implements OnInit {
     }
   };
 
+
+
+  riskLevelOptions: Options =  {
+    floor: 1,
+    ceil: 6,
+    step: 1,
+    minLimit: 1,
+    showTicks: false,
+    showTicksValues: true,
+    showSelectionBar: true,
+    keyboardSupport: false,
+    stepsArray: [
+      {value: 1, legend: 'Zeer defensief'},
+      {value: 2, legend: 'Defensief'},
+      {value: 3, legend: 'Matig defensief'},
+      {value: 4, legend: 'Matig offensief'},
+      {value: 5, legend: 'Offensief'},
+      {value: 6, legend: 'Zeer offensief'}
+    ],
+    
+    selectionBarGradient: {
+      from: 'green',
+      to: 'red'
+    }
+
+  };
+
+
   recurringDepositOptions: Options =  {
-    id: 'recurringDeposit',
     showTicks: false,
     showTicksValues: false,
     showSelectionBar: true,
@@ -100,6 +127,7 @@ export class InvestmentComponent implements OnInit {
 
   
   public period: number = 2;
+  public riskLevel: number = 3;
   priceJson: string;
   portfolioJson : string;
   public variableServiceFeePercentage : number; 

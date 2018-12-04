@@ -11,17 +11,20 @@
   <ng5-slider [(value)]="period" [options]="periodOptions" (valueChange)="recalculate()"></ng5-slider>
 </p>
 
-
 <p align="center"> {{transactions}} transactions per year
   <ng5-slider [(value)]="transactions" [options]="transactionOptions" (valueChange)="recalculate()"></ng5-slider>
 </p>  
 <p align="center">
-{{oneTimeDeposit | currency:"EUR" }} One Time Deposit
+{{oneTimeDeposit | currency:"EUR" : symbol:"1.0-0" }} One Time Deposit
 <ng5-slider [(value)]="oneTimeDeposit" [options]="oneTimeDepositOptions" (valueChange)="recalculate()"></ng5-slider>
 </p>
-<p align="center">Recurring Deposit: {{recurringDeposit| currency:"EUR"}}
+<p align="center">Yearly recurring investment: {{recurringDeposit| currency:"EUR": symbol:"1.0-0"}}
 <ng5-slider [(value)]="recurringDeposit" [options]="recurringDepositOptions" (valueChange)="recalculate()"></ng5-slider>
 </p>
+<p align="center">Risk: {{riskLevel}}
+  <ng5-slider [(value)]="riskLevel" [options]="riskLevelOptions" (valueChange)="recalculate()"></ng5-slider>
+</p>
+<p></p>
 </mat-card-content>
 </mat-card>
 
@@ -45,8 +48,8 @@
     <th>Currency Cost</th>
 <tr *ngFor="let p of portfolio">
   <td>{{p.year}}</td>
-  <td>{{p.asset | currency:"EUR"}}</td>
-  <td>{{p.cumAsset | currency:"EUR"}}</td>
+  <td>{{p.asset | currency:"EUR": symbol:"1.0-0"}}</td>
+  <td>{{p.cumAsset | currency:"EUR": symbol:"1.0-0"}}</td>
   <td>{{p.variableServiceFee | currency:"EUR"}}</td>
   <td>{{p.fixedServiceFee | currency:"EUR"}}</td>
   <td>{{p.txCost | currency:"EUR"}}</td>
