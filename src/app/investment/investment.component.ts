@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit , Input} from '@angular/core';
 import { ConfigService } from '../iot.service';
 import { Options } from 'ng5-slider';
 
@@ -18,9 +18,10 @@ import { Options } from 'ng5-slider';
 })
 export class InvestmentComponent implements OnInit {
 
+  @Input('product') product : string;
 
   value: number = 100;
-  productCode = "ZBB";
+  //productCode = "ZBB";
   oneTimeDepositStepRange: number[] = this.createStepRange([
     {rangeLow:0,rangeHigh:250,rangeStep:10},
     {rangeLow:250,rangeHigh:1000,rangeStep:50},
@@ -155,8 +156,11 @@ export class InvestmentComponent implements OnInit {
 
   ngOnInit() {
     console.log("start ngOnInit");
+    console.log(this.product);
+    
+    //this.productCode = this.product;
     this.ConfigService.getJSON("./assets/portfoliodivision.json").subscribe(data => {
-      this.assetAllocationList = data.portfolioDevision[this.productCode];
+      this.assetAllocationList = data.portfolioDevision[this.product];
       this.portfolioJson = data;
       console.log("receiving assetAllocationList");
       console.log(this.assetAllocationList);
@@ -295,7 +299,7 @@ export class InvestmentComponent implements OnInit {
       // make sure a instrument type can have more than one cost by handling an array as a result from the filte
       //console.log(assetAllocation.percentage);
       
-      //console.log(instrumentPrices);
+      console.log(instrumentPrices);
       if (instrumentPrices) {
         //console.log("yes! instrumentPrices")
         let instrumentPrice = instrumentPrices[0];
