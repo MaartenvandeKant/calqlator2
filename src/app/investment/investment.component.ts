@@ -10,6 +10,8 @@ import { Options } from 'ng5-slider';
 // to do remove un-used variables 
 // test comment for git
 
+
+
 @Component({
   selector: 'app-investment',
   templateUrl: './investment.component.html',
@@ -17,9 +19,15 @@ import { Options } from 'ng5-slider';
   
   styleUrls: ['./investment.component.css']
 })
+
 export class InvestmentComponent implements OnInit {
 
   @Input('product') product : string;
+
+
+    goodMarketFactor : number  = 1.1;
+    nutralMarketFactor : number  = 1;
+    badMarketFactor : number  = 0.95;
 
   value: number = 100;
   //productCode = "ZBB";
@@ -141,6 +149,7 @@ export class InvestmentComponent implements OnInit {
   public discountLevels = [];
   public tax : number;
   public currencyCost : number;
+  public totalAssets : number;
   assetAllocationList = [];
   startyear : number = 2018
   public portfolio: any;
@@ -186,23 +195,45 @@ export class InvestmentComponent implements OnInit {
     //console.log("recalculate")
     this.portfolio = []
     let iPastAsset = 0;
+    let iDeposit = 0;
+    let iPastDeposit = 0;
+    let iGoodMarketAssets = 0;
+    let iNutralMarketAssets = 0;
+    let iBadmarketAssets = 0;
+
     let today = new Date();
     for (let index = 0 ; index < this.period; index++) {
       let iyear = this.year(index);
-      let iAsset = this.asset(index,iPastAsset);
-      let iCumAsset = this.cumAsset(index-1,iAsset);
+      //let iBadMarketAssets = this.asset(index,iPastAsset);
+      //let iNutralMarketAssets = this.asset(index,iPastAsset);
+      //let iGoodMarketAssets = this.asset(index,iPastAsset);
+      
+      let iDeposit = this.deposit(index,iPastDeposit);
+      let iCumDeposit = this.cumDeposit(index-1,iDeposit);
+      
+        iGoodMarketAssets += iDeposit;
+        iNutralMarketAssets += iDeposit;
+        iBadmarketAssets += iDeposit;
+      
+      iGoodMarketAssets = iGoodMarketAssets * this.goodMarketFactor;
+      iNutralMarketAssets = iNutralMarketAssets * this.nutralMarketFactor;
+      iBadmarketAssets = iBadmarketAssets * this.badMarketFactor;
+      
       let iFixexServiceFee = this.fixexServiceFee(today,iyear);
 
-      let iVariableServiceFee = this.variableServiceFee(iCumAsset);
+      let iVariableServiceFee = this.variableServiceFee(iCumDeposit);
       
-      let iTxCost = this.txCost(iAsset);
+      let iTxCost = this.txCost(iDeposit);
       let iTxDiscount = this.txDiscount(iTxCost);
-      let iTax = this.tax * iAsset;
-      let iCurrencyCost = this.currencyCost * iAsset;
+      let iTax = this.tax * iDeposit;
+      let iCurrencyCost = this.currencyCost * iDeposit;
       this.portfolio.push( {
         "year": iyear,
-        "asset":iAsset,
-        "cumAsset": iCumAsset,
+        "deposit" : iDeposit,
+        "cumDeposit" : iCumDeposit,
+        "badMarketAssets" : iBadmarketAssets,
+        "nutralMarketAssets" : iNutralMarketAssets,
+        "goodMarketAssets" : iGoodMarketAssets,
         "fixedServiceFee": iFixexServiceFee,
         "variableServiceFee": iVariableServiceFee,
         "txCost" : iTxCost,
@@ -210,28 +241,50 @@ export class InvestmentComponent implements OnInit {
         "currencyCost" : iCurrencyCost,
         "txDiscount" : iTxDiscount
       });
-      iPastAsset = iAsset;
+      iPastDeposit = iDeposit;
+      
     }
+    //this.totalCumAssets = iCumAsset;
   }
+
+
+
   year(i: number){
    
     return this.startyear + i;
   }
 
-  asset (i: number,iStartAsset){
+  /*asset (i: number,iStartAsset){
     let asset = 0;
     if (i==0) 
        asset = this.oneTimeDeposit;
     asset +=  this.recurringDeposit;  // multiply by * 12 is period is one month
     return  asset; 
   }
+*/
+  deposit (i: number,iStartAsset){
+    let deposit = 0;
+    if (i==0) 
+    deposit = this.oneTimeDeposit;
+    deposit +=  this.recurringDeposit;  // multiply by * 12 is period is one month
+    return  deposit; 
+  }
 
+/*
   cumAsset (i,a) {
     let asset = a;
     if (i>=0)
       asset += this.portfolio[i].cumAsset;
 
     return asset;
+  }
+*/
+  cumDeposit(i,a) {
+    let deposit = a;
+    if (i>=0)
+    deposit += this.portfolio[i].cumDeposit;
+
+    return deposit;
   }
   
   fixexServiceFee(d:Date,year) {
@@ -300,7 +353,7 @@ export class InvestmentComponent implements OnInit {
       // make sure a instrument type can have more than one cost by handling an array as a result from the filte
       //console.log(assetAllocation.percentage);
       
-      console.log(instrumentPrices);
+      //console.log(instrumentPrices);
       if (instrumentPrices) {
         //console.log("yes! instrumentPrices")
         let instrumentPrice = instrumentPrices[0];
