@@ -167,12 +167,12 @@ export class InvestmentComponent implements OnInit {
     });
     this.ConfigService.getJSON("./assets/tx_prices.json").subscribe(data => {
       this.priceJson = data;
-      this.priceList = data.priceList;
-      this.tax = data.tax;
-      this.currencyCost = data.currency;
-      this.discountLevels = data.discountLevels;
-      this.variableServiceFeePercentage = data.variableServiceFeePercentage;
-      this.fixedMonthlyServiceFee = data.fixedMonthlyServiceFee;
+      this.priceList = data[this.product].priceList;
+      this.tax = data[this.product].tax;
+      this.currencyCost = data[this.product].currency;
+      this.discountLevels = data[this.product].discountLevels;
+      this.variableServiceFeePercentage = data[this.product].variableServiceFeePercentage;
+      this.fixedMonthlyServiceFee = data[this.product].fixedMonthlyServiceFee;
       console.log("receiving pricelist");
       console.log(this.priceList );
       this.recalculate();
