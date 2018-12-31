@@ -248,7 +248,7 @@ export class InvestmentComponent implements OnInit {
   variableServiceFee (totalAsset:number) {
     return (totalAsset * this.variableServiceFeePercentage);
   }
- 
+  
   txDiscount(txCost) {
     let iTxDiscount = 0;
 
