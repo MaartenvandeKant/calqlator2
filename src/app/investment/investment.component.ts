@@ -8,6 +8,7 @@ import { Options } from 'ng5-slider';
 // to do load cost for multiple risk levels
 // to do load cost for multiple products
 // to do remove un-used variables 
+// test comment for git
 
 @Component({
   selector: 'app-investment',
