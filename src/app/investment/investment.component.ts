@@ -20,6 +20,7 @@ export class InvestmentComponent implements OnInit {
 
 
   value: number = 100;
+  productCode = "ZBB";
   oneTimeDepositStepRange: number[] = this.createStepRange([
     {rangeLow:0,rangeHigh:250,rangeStep:10},
     {rangeLow:250,rangeHigh:1000,rangeStep:50},
@@ -155,7 +156,7 @@ export class InvestmentComponent implements OnInit {
   ngOnInit() {
     console.log("start ngOnInit");
     this.ConfigService.getJSON("./assets/portfoliodivision.json").subscribe(data => {
-      this.assetAllocationList = data.portfolioDevision;
+      this.assetAllocationList = data.portfolioDevision[this.productCode];
       this.portfolioJson = data;
       console.log("receiving assetAllocationList");
       console.log(this.assetAllocationList);
@@ -287,12 +288,14 @@ export class InvestmentComponent implements OnInit {
     // loop 2 though that list of prices and calculat the price of the 
     // 
     for (let index = 0; index < this.assetAllocationList.length; index++) {
+      
       const assetAllocation = this.assetAllocationList[index];
       
       const instrumentPrices = this.priceList.filter(instrument => instrument.instrumentName == assetAllocation.assetName);
       // make sure a instrument type can have more than one cost by handling an array as a result from the filte
       //console.log(assetAllocation.percentage);
-      //console.log(instrumentPrices[0].costType);
+      
+      //console.log(instrumentPrices);
       if (instrumentPrices) {
         //console.log("yes! instrumentPrices")
         let instrumentPrice = instrumentPrices[0];

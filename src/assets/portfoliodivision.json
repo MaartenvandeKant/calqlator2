@@ -1,13 +1,24 @@
 {
-    "portfolioDevision": [
-      {
-        "assetName": "Dutch Shares",
-        "percentage": 1
-      },
-      {
-        "assetName": "ETF",
-        "percentage": 0
-      }
-      
-    ]
+  "portfolioDevision": {
+    "ZBB": [
+    {
+      "assetName": "Dutch Shares",
+      "percentage": 1
+    },
+    {
+      "assetName": "ETF",
+      "percentage": 0
+    }
+  ],
+  "ZBP": [
+  {
+    "assetName": "Dutch Shares",
+    "percentage": 0
+  },
+  {
+    "assetName": "ETF",
+    "percentage": 0
   }
+   ] 
+}
+}

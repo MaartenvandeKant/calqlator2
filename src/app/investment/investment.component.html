@@ -80,7 +80,16 @@
       </mat-expansion-panel-header>
       
       <mat-form-field class="example-full-width">
-          <textarea rows="20" matInput placeholder="portfolio" value="{{portfolioJson| json}}"></textarea>
+        <p>
+          Json for this product : {{productCode}}
+          <textarea rows="20" matInput placeholder="portfolio" value="{{assetAllocationList| json}}"></textarea> 
+        </p>
+        <p>
+          Total Json
+            <textarea rows="20" matInput placeholder="portfolio" value="{{portfolioJson| json}}"></textarea>
+        </p>
+        
+        
         </mat-form-field>
   
       
