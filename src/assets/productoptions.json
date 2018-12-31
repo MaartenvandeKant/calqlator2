@@ -1,0 +1,13 @@
+{
+    "productOptions": [
+      {
+        "product": "Zelf Beleggen Basis",
+        "productOption1": "some thing"
+      },
+      {
+        "product": "Zelf Beleggen plus",
+        "productOption1": "some thing else"
+      }
+      
+    ]
+  }

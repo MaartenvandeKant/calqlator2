@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit , Input} from '@angular/core';
 import { ConfigService } from '../iot.service';
 import { Options } from 'ng5-slider';
 
@@ -8,6 +8,7 @@ import { Options } from 'ng5-slider';
 // to do load cost for multiple risk levels
 // to do load cost for multiple products
 // to do remove un-used variables 
+// test comment for git
 
 @Component({
   selector: 'app-investment',
@@ -18,8 +19,10 @@ import { Options } from 'ng5-slider';
 })
 export class InvestmentComponent implements OnInit {
 
+  @Input('product') product : string;
 
   value: number = 100;
+  //productCode = "ZBB";
   oneTimeDepositStepRange: number[] = this.createStepRange([
     {rangeLow:0,rangeHigh:250,rangeStep:10},
     {rangeLow:250,rangeHigh:1000,rangeStep:50},
@@ -154,20 +157,23 @@ export class InvestmentComponent implements OnInit {
 
   ngOnInit() {
     console.log("start ngOnInit");
+    console.log(this.product);
+    
+    //this.productCode = this.product;
     this.ConfigService.getJSON("./assets/portfoliodivision.json").subscribe(data => {
-      this.assetAllocationList = data.portfolioDevision;
+      this.assetAllocationList = data.portfolioDevision[this.product];
       this.portfolioJson = data;
       console.log("receiving assetAllocationList");
       console.log(this.assetAllocationList);
     });
     this.ConfigService.getJSON("./assets/tx_prices.json").subscribe(data => {
       this.priceJson = data;
-      this.priceList = data.priceList;
-      this.tax = data.tax;
-      this.currencyCost = data.currency;
-      this.discountLevels = data.discountLevels;
-      this.variableServiceFeePercentage = data.variableServiceFeePercentage;
-      this.fixedMonthlyServiceFee = data.fixedMonthlyServiceFee;
+      this.priceList = data[this.product].priceList;
+      this.tax = data[this.product].tax;
+      this.currencyCost = data[this.product].currency;
+      this.discountLevels = data[this.product].discountLevels;
+      this.variableServiceFeePercentage = data[this.product].variableServiceFeePercentage;
+      this.fixedMonthlyServiceFee = data[this.product].fixedMonthlyServiceFee;
       console.log("receiving pricelist");
       console.log(this.priceList );
       this.recalculate();
@@ -242,7 +248,7 @@ export class InvestmentComponent implements OnInit {
   variableServiceFee (totalAsset:number) {
     return (totalAsset * this.variableServiceFeePercentage);
   }
-
+   
   txDiscount(txCost) {
     let iTxDiscount = 0;
 
@@ -287,12 +293,14 @@ export class InvestmentComponent implements OnInit {
     // loop 2 though that list of prices and calculat the price of the 
     // 
     for (let index = 0; index < this.assetAllocationList.length; index++) {
+      
       const assetAllocation = this.assetAllocationList[index];
       
       const instrumentPrices = this.priceList.filter(instrument => instrument.instrumentName == assetAllocation.assetName);
       // make sure a instrument type can have more than one cost by handling an array as a result from the filte
       //console.log(assetAllocation.percentage);
-      //console.log(instrumentPrices[0].costType);
+      
+      console.log(instrumentPrices);
       if (instrumentPrices) {
         //console.log("yes! instrumentPrices")
         let instrumentPrice = instrumentPrices[0];
