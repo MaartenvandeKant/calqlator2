@@ -13,6 +13,8 @@ import { Ng5SliderModule } from 'ng5-slider';
 import {MatCardModule} from '@angular/material/card';
 import {MatInputModule} from '@angular/material/input';
 import {MatExpansionModule} from '@angular/material/expansion';
+import {MatGridListModule} from '@angular/material/grid-list';
+import {MatDividerModule} from '@angular/material/divider';
 
 @NgModule({
   declarations: [
@@ -30,6 +32,8 @@ import {MatExpansionModule} from '@angular/material/expansion';
     BrowserAnimationsModule,
     MatInputModule,
     MatExpansionModule,
+    MatGridListModule,
+    MatDividerModule,
     MatCardModule
   ],
   providers: [],
