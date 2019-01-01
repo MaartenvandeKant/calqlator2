@@ -32,7 +32,10 @@
       </mat-card>
     </td>
     <td>
-      {{totalDeposit}}
+      {{cumTotalDeposit | currency:"EUR" }} 
+      {{cumTotalNutralMarketAssets | currency:"EUR"}}
+      {{cumTotalNutralMarketCosts | currency:"EUR"}}
+
     </td>
   </tr>
   <tr>
@@ -69,9 +72,13 @@
     <td>{{p.year}}
 
     </td>
-    <td>{{p.deposit | currency:"EUR": symbol:"1.0-0"}}</td>
-    <td>{{p.cumDeposit currency:"EUR": symbol:"1.0-0"}}</td>
-    <td>-</td>
+    <td>{{p.deposit | currency:"EUR": symbol:"1.0-0"}} <br>
+      {{p.deposit | currency:"EUR": symbol:"1.0-0"}}<br>
+      {{p.deposit | currency:"EUR": symbol:"1.0-0"}}</td>
+    <td>{{p.cumDeposit | currency:"EUR"}}<br>
+      {{p.cumDeposit | currency:"EUR"}}<br>
+      {{p.cumDeposit | currency:"EUR"}}</td>
+    <td></td>
     <td>
       {{p.badMarketAssets | currency:"EUR": symbol:"1.0-0"}}<br>
       {{p.nutralMarketAssets | currency:"EUR": symbol:"1.0-0"}}<br>

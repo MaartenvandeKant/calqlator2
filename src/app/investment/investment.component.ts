@@ -155,13 +155,13 @@ export class InvestmentComponent implements OnInit {
   public portfolio: any;
   priceList: any;
 
-  public totalCumDeposit: number;
-  public totalnutralMarketAssets: number;
-  public totalBadMarketAssets: number;
-  public totalGoodMarketAssets: number;
-  public totalnutralMarketCosts: number;
-  public totalBadMarketCosts: number;
-  public totalGoodMarketCosts: number;
+  public cumTotalDeposit: number;
+  public cumTotalNutralMarketAssets: number;
+  public cumTotalBadMarketAssets: number;
+  public cumTotalGoodMarketAssets: number;
+  public cumTotalNutralMarketCosts: number;
+  public cumTotalBadMarketCosts: number;
+  public cumTotalGoodMarketCosts: number;
 
 
 
@@ -208,9 +208,11 @@ export class InvestmentComponent implements OnInit {
     let iPastDeposit = 0;
     let iCumDeposit = 0;
     
-    let iGoodMarketAssets = 0;
+    let iBadMarketAssets = 0;
     let iNutralMarketAssets = 0;
-    let iBadmarketAssets = 0;
+    let iGoodMarketAssets = 0;
+    
+    
 
     let iTotalBadMarketCosts = 0;
     let iTotalNutrakMarketCosts = 0;
@@ -243,18 +245,19 @@ export class InvestmentComponent implements OnInit {
       let iyear = this.year(index);
       
       let iDeposit = this.deposit(index, iPastDeposit);
-      let iCumDeposit = this.cumDeposit(index - 1, iDeposit);
+      iCumDeposit = this.cumDeposit(index - 1, iDeposit);
 
-      iGoodMarketAssets += iDeposit;
+      iBadMarketAssets += iDeposit;
       iNutralMarketAssets += iDeposit;
-      iBadmarketAssets += iDeposit;
+      iGoodMarketAssets += iDeposit;
+      
 
-      iBadmarketAssets = iBadmarketAssets * this.badMarketFactor;
+      iBadMarketAssets = iBadMarketAssets * this.badMarketFactor;
       iNutralMarketAssets = iNutralMarketAssets * this.nutralMarketFactor;
       iGoodMarketAssets = iGoodMarketAssets * this.goodMarketFactor;
       
       
-      iBadMarketVariableServiceFee =  + this.variableServiceFee(iBadmarketAssets);
+      iBadMarketVariableServiceFee =  + this.variableServiceFee(iBadMarketAssets);
       iNutralMarketVariableServiceFee = this.variableServiceFee(iNutralMarketAssets);
       iGoodMarketVariableServiceFee =  this.variableServiceFee(iGoodMarketAssets);
       
@@ -286,9 +289,11 @@ export class InvestmentComponent implements OnInit {
         "year": iyear,
         "deposit": iDeposit,
         "cumDeposit": iCumDeposit,
-        "badMarketAssets": iBadmarketAssets,
+        
+        "badMarketAssets": iBadMarketAssets,
         "nutralMarketAssets": iNutralMarketAssets,
         "goodMarketAssets": iGoodMarketAssets,
+
         "fixedServiceFee": iFixexServiceFee,
         
         "badMarketVariableServiceFee": iBadMarketVariableServiceFee,
@@ -314,10 +319,17 @@ export class InvestmentComponent implements OnInit {
         "txDiscount": iTxDiscount
 
       });
-      iPastDeposit = iDeposit;
+      iPastDeposit = iCumDeposit;
+      this.cumTotalDeposit = iCumDeposit;
 
     }
-    this.totalCumDeposit = iCumDeposit;
+    
+    this.cumTotalBadMarketAssets = iBadMarketAssets;
+    this.cumTotalNutralMarketAssets = iNutralMarketAssets;
+    this.cumTotalGoodMarketAssets = iGoodMarketAssets;
+    this.cumTotalBadMarketCosts = iCumTotalBadMarketCost;
+    this.cumTotalNutralMarketCosts = iCumTotalNutralMarketCost;
+    this.cumTotalGoodMarketCosts = iCumTotalGoodMarketCost;
   }
 
 
