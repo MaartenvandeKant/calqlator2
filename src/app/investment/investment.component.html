@@ -1,3 +1,5 @@
+
+
 <table class="iot-table">
   <tr>
     <td>
@@ -32,6 +34,22 @@
       </mat-card>
     </td>
     <td>
+
+        <div class="container">
+            <div class="col-sm-4 text-center">
+              <h2 class="text-center">PIE chart using Chartjs and Angular 6</h2>
+              <canvas baseChart
+                    [data]="barChartData"
+                    [labels]="barChartLabels"
+                    [chartType]="barChartType"
+                    [options]="barChartOptions"
+                    [colors]="barChartColors"
+                    (chartHover)="chartHovered($event)"
+                    (chartClick)="chartClicked($event)"></canvas>
+                </div>
+          </div>
+          
+
       {{cumTotalDeposit | currency:"EUR" }} 
       {{cumTotalNutralMarketAssets | currency:"EUR"}}
       {{cumTotalNutralMarketCosts | currency:"EUR"}}

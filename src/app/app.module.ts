@@ -15,6 +15,9 @@ import {MatInputModule} from '@angular/material/input';
 import {MatExpansionModule} from '@angular/material/expansion';
 import {MatGridListModule} from '@angular/material/grid-list';
 import {MatDividerModule} from '@angular/material/divider';
+import {ChartsModule } from 'ng2-charts/ng2-charts';
+
+
 
 @NgModule({
   declarations: [
@@ -34,6 +37,7 @@ import {MatDividerModule} from '@angular/material/divider';
     MatExpansionModule,
     MatGridListModule,
     MatDividerModule,
+    ChartsModule,
     MatCardModule
   ],
   providers: [],

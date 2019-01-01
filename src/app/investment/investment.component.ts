@@ -3,6 +3,7 @@ import { ConfigService } from '../iot.service';
 import { Options } from 'ng5-slider';
 
 
+
 // to do comments
 // to do testing
 // to do load cost for multiple risk levels
@@ -22,12 +23,46 @@ import { Options } from 'ng5-slider';
 
 export class InvestmentComponent implements OnInit {
 
+
+  public barChartLabels:string[] = ["Bad Market", "Nutral Market", "Good Market"];
+  public barChartData:number[] = [21, 39, 30];
+  public barChartType:string = 'bar';
+  public barChartOptions:any = { scales: {
+    yAxes: [{
+        ticks: {
+            beginAtZero:true
+        }
+    }]
+}};
+  public barChartColors:any =  [
+    {
+      backgroundColor: 'rgba(103, 103, 183, .5)',
+      borderColor: 'rgb(103, 58, 183)',
+      pointBackgroundColor: 'rgb(103, 58, 183)',
+      pointBorderColor: '#fff',
+      pointHoverBackgroundColor: '#fff',
+      pointHoverBorderColor: 'rgba(103, 58, 183, .8)'
+    }
+    // ...colors for additional data sets
+  ];
+  // events on slice click
+  public chartClicked(e:any):void {
+    console.log(e);
+  }
+ 
+ // event on pie chart slice hover
+  public chartHovered(e:any):void {
+    console.log(e);
+  }
+
   @Input('product') product: string;
 
 
   goodMarketFactor: number = 1.1;
   nutralMarketFactor: number = 1;
   badMarketFactor: number = 0.95;
+
+
 
   value: number = 100;
   //productCode = "ZBB";
@@ -163,6 +198,8 @@ export class InvestmentComponent implements OnInit {
   public cumTotalBadMarketCosts: number;
   public cumTotalGoodMarketCosts: number;
 
+  
+  public chart : any;
 
 
 
@@ -173,7 +210,11 @@ export class InvestmentComponent implements OnInit {
 
   }
 
+  
   ngOnInit() {
+
+   
+
     console.log("start ngOnInit");
     console.log(this.product);
 
@@ -197,9 +238,11 @@ export class InvestmentComponent implements OnInit {
       this.recalculate();
     });
 
+ 
 
   }
 
+  
   recalculate() {
     //console.log("recalculate")
     this.portfolio = []
@@ -330,6 +373,12 @@ export class InvestmentComponent implements OnInit {
     this.cumTotalBadMarketCosts = iCumTotalBadMarketCost;
     this.cumTotalNutralMarketCosts = iCumTotalNutralMarketCost;
     this.cumTotalGoodMarketCosts = iCumTotalGoodMarketCost;
+
+    this.barChartData = [ 
+      this.cumTotalBadMarketAssets ,
+      this.cumTotalNutralMarketAssets,
+      this.cumTotalGoodMarketAssets
+    ];
   }
 
 
