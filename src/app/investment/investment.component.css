@@ -3,7 +3,7 @@
     max-width: 400px;
   }
   .iot-debug-card {
-    max-width: 800px;
+    max-width: 100%;
   }
   
   .iot-grid-tile{
@@ -17,12 +17,13 @@
   }
 
 
-table {
-    border-collapse: collapse;
+.iot-table {
+  border-collapse: collapse;
+  width: "100%"
 }
 
-table, th, td {
-    border: 1px solid gray;
+table, th, td iot-table{
+  border: 1px solid gray;
 }
 
 
