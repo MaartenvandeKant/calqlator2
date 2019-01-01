@@ -1,4 +1,4 @@
-import { Component, OnInit , Input} from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { ConfigService } from '../iot.service';
 import { Options } from 'ng5-slider';
 
@@ -15,37 +15,37 @@ import { Options } from 'ng5-slider';
 @Component({
   selector: 'app-investment',
   templateUrl: './investment.component.html',
-  providers:[ConfigService],
-  
+  providers: [ConfigService],
+
   styleUrls: ['./investment.component.css']
 })
 
 export class InvestmentComponent implements OnInit {
 
-  @Input('product') product : string;
+  @Input('product') product: string;
 
 
-    goodMarketFactor : number  = 1.1;
-    nutralMarketFactor : number  = 1;
-    badMarketFactor : number  = 0.95;
+  goodMarketFactor: number = 1.1;
+  nutralMarketFactor: number = 1;
+  badMarketFactor: number = 0.95;
 
   value: number = 100;
   //productCode = "ZBB";
   oneTimeDepositStepRange: number[] = this.createStepRange([
-    {rangeLow:0,rangeHigh:250,rangeStep:10},
-    {rangeLow:250,rangeHigh:1000,rangeStep:50},
-    {rangeLow:1000,rangeHigh:5000,rangeStep:200},
-    {rangeLow:5000,rangeHigh:10000,rangeStep:1000},
-    {rangeLow:10000,rangeHigh:100000,rangeStep:10000},
+    { rangeLow: 0, rangeHigh: 250, rangeStep: 10 },
+    { rangeLow: 250, rangeHigh: 1000, rangeStep: 50 },
+    { rangeLow: 1000, rangeHigh: 5000, rangeStep: 200 },
+    { rangeLow: 5000, rangeHigh: 10000, rangeStep: 1000 },
+    { rangeLow: 10000, rangeHigh: 100000, rangeStep: 10000 },
 
   ]);
   recurringDepositStepRange: number[] = this.createStepRange([
-    {rangeLow:0,rangeHigh:250,rangeStep:10},
-    {rangeLow:250,rangeHigh:1000,rangeStep:50},
-    {rangeLow:1000,rangeHigh:5000,rangeStep:200}    
+    { rangeLow: 0, rangeHigh: 250, rangeStep: 10 },
+    { rangeLow: 250, rangeHigh: 1000, rangeStep: 50 },
+    { rangeLow: 1000, rangeHigh: 5000, rangeStep: 200 }
   ]);
-  
-  periodOptions: Options =  {
+
+  periodOptions: Options = {
     minLimit: 2,
     floor: 0,
     ceil: 42,
@@ -54,7 +54,7 @@ export class InvestmentComponent implements OnInit {
     showSelectionBar: false
   };
 
-  transactionOptions: Options =  {
+  transactionOptions: Options = {
     floor: 0,
     ceil: 300,
     showTicks: false,
@@ -62,7 +62,7 @@ export class InvestmentComponent implements OnInit {
     showSelectionBar: false
   };
 
-  oneTimeDepositOptions: Options =  {
+  oneTimeDepositOptions: Options = {
     showTicks: false,
     showTicksValues: false,
     showSelectionBar: true,
@@ -77,7 +77,7 @@ export class InvestmentComponent implements OnInit {
 
 
 
-  riskLevelOptions: Options =  {
+  riskLevelOptions: Options = {
     floor: 1,
     ceil: 6,
     step: 1,
@@ -87,14 +87,14 @@ export class InvestmentComponent implements OnInit {
     showSelectionBar: true,
     keyboardSupport: false,
     stepsArray: [
-      {value: 1, legend: 'Zeer defensief'},
-      {value: 2, legend: 'Defensief'},
-      {value: 3, legend: 'Matig defensief'},
-      {value: 4, legend: 'Matig offensief'},
-      {value: 5, legend: 'Offensief'},
-      {value: 6, legend: 'Zeer offensief'}
+      { value: 1, legend: 'Zeer defensief' },
+      { value: 2, legend: 'Defensief' },
+      { value: 3, legend: 'Matig defensief' },
+      { value: 4, legend: 'Matig offensief' },
+      { value: 5, legend: 'Offensief' },
+      { value: 6, legend: 'Zeer offensief' }
     ],
-    
+
     selectionBarGradient: {
       from: 'green',
       to: 'red'
@@ -103,7 +103,7 @@ export class InvestmentComponent implements OnInit {
   };
 
 
-  recurringDepositOptions: Options =  {
+  recurringDepositOptions: Options = {
     showTicks: false,
     showTicksValues: false,
     showSelectionBar: true,
@@ -116,58 +116,67 @@ export class InvestmentComponent implements OnInit {
     }
   };
 
-  
 
-  createStepRange(rangeList : Array<{rangeLow,rangeHigh,rangeStep}>): number[] {
+
+  createStepRange(rangeList: Array<{ rangeLow, rangeHigh, rangeStep }>): number[] {
     // console.log(rangeList)
-    
+
     const steps: number[] = [];
     rangeList.forEach(range => {
       for (let i: number = range.rangeLow; i <= range.rangeHigh; i = i + range.rangeStep) {
-        steps.push( i);
+        steps.push(i);
       }
     });
-    
-    
-    
-   
+
+
+
+
     return steps;
   }
 
 
 
-  
+
   public period: number = 2;
   public riskLevel: number = 3;
   priceJson: string;
-  portfolioJson : string;
-  public variableServiceFeePercentage : number; 
-  public fixedMonthlyServiceFee : number;
+  portfolioJson: string;
+  public variableServiceFeePercentage: number;
+  public fixedMonthlyServiceFee: number;
   public oneTimeDeposit = 100;
   public recurringDeposit = 100;
   public transactions = 10;
   public discountLevels = [];
-  public tax : number;
-  public currencyCost : number;
-  public totalAssets : number;
+  public tax: number;
+  public currencyCost: number;
+
   assetAllocationList = [];
-  startyear : number = 2018
+  startyear: number = 2018
   public portfolio: any;
   priceList: any;
-  
+
+  public totalCumDeposit: number;
+  public totalnutralMarketAssets: number;
+  public totalBadMarketAssets: number;
+  public totalGoodMarketAssets: number;
+  public totalnutralMarketCosts: number;
+  public totalBadMarketCosts: number;
+  public totalGoodMarketCosts: number;
 
 
-  constructor(private ConfigService : ConfigService ) { 
+
+
+  constructor(private ConfigService: ConfigService) {
     console.log("start constructor");
-    
-    
-  
+
+
+
   }
 
   ngOnInit() {
     console.log("start ngOnInit");
     console.log(this.product);
-    
+
     //this.productCode = this.product;
     this.ConfigService.getJSON("./assets/portfoliodivision.json").subscribe(data => {
       this.assetAllocationList = data.portfolioDevision[this.product];
@@ -184,73 +193,137 @@ export class InvestmentComponent implements OnInit {
       this.variableServiceFeePercentage = data[this.product].variableServiceFeePercentage;
       this.fixedMonthlyServiceFee = data[this.product].fixedMonthlyServiceFee;
       console.log("receiving pricelist");
-      console.log(this.priceList );
+      console.log(this.priceList);
       this.recalculate();
     });
-    
-   
+
+
   }
 
-  recalculate(){
+  recalculate() {
     //console.log("recalculate")
     this.portfolio = []
     let iPastAsset = 0;
     let iDeposit = 0;
     let iPastDeposit = 0;
+    let iCumDeposit = 0;
+    
     let iGoodMarketAssets = 0;
     let iNutralMarketAssets = 0;
     let iBadmarketAssets = 0;
 
-    let today = new Date();
-    for (let index = 0 ; index < this.period; index++) {
-      let iyear = this.year(index);
-      //let iBadMarketAssets = this.asset(index,iPastAsset);
-      //let iNutralMarketAssets = this.asset(index,iPastAsset);
-      //let iGoodMarketAssets = this.asset(index,iPastAsset);
-      
-      let iDeposit = this.deposit(index,iPastDeposit);
-      let iCumDeposit = this.cumDeposit(index-1,iDeposit);
-      
-        iGoodMarketAssets += iDeposit;
-        iNutralMarketAssets += iDeposit;
-        iBadmarketAssets += iDeposit;
-      
-      iGoodMarketAssets = iGoodMarketAssets * this.goodMarketFactor;
-      iNutralMarketAssets = iNutralMarketAssets * this.nutralMarketFactor;
-      iBadmarketAssets = iBadmarketAssets * this.badMarketFactor;
-      
-      let iFixexServiceFee = this.fixexServiceFee(today,iyear);
+    let iTotalBadMarketCosts = 0;
+    let iTotalNutrakMarketCosts = 0;
+    let iTotalGoodMarketCosts = 0;
 
-      let iVariableServiceFee = this.variableServiceFee(iCumDeposit);
+    let iBadMarketVariableServiceFee = 0;
+    let iNutralMarketVariableServiceFee = 0;
+    let iGoodMarketVariableServiceFee= 0;
+
+    let iCumBadMarketVariableServiceFee = 0;
+    let iCumNutralMarketVariableServiceFee = 0;
+    let iCumGoodMarketVariableServiceFee = 0;
+
+    let iTotalBadMarketCost = 0;
+    let iTotalNutralMarketCost = 0;
+    let iTotalGoodMarketCost = 0;
+
+    let iCumTotalBadMarketCost = 0;
+    let iCumTotalNutralMarketCost = 0;
+    let iCumTotalGoodMarketCost = 0;
+  
+    let iTotalTax = 0;
+    
+    let iCumTotalTax = 0;
+    
+
+
+    let today = new Date();
+    for (let index = 0; index < this.period; index++) {
+      let iyear = this.year(index);
+      
+      let iDeposit = this.deposit(index, iPastDeposit);
+      let iCumDeposit = this.cumDeposit(index - 1, iDeposit);
+
+      iGoodMarketAssets += iDeposit;
+      iNutralMarketAssets += iDeposit;
+      iBadmarketAssets += iDeposit;
+
+      iBadmarketAssets = iBadmarketAssets * this.badMarketFactor;
+      iNutralMarketAssets = iNutralMarketAssets * this.nutralMarketFactor;
+      iGoodMarketAssets = iGoodMarketAssets * this.goodMarketFactor;
+      
+      
+      iBadMarketVariableServiceFee =  + this.variableServiceFee(iBadmarketAssets);
+      iNutralMarketVariableServiceFee = this.variableServiceFee(iNutralMarketAssets);
+      iGoodMarketVariableServiceFee =  this.variableServiceFee(iGoodMarketAssets);
+      
+
+      iCumBadMarketVariableServiceFee +=  iBadMarketVariableServiceFee;
+      iCumNutralMarketVariableServiceFee += iNutralMarketVariableServiceFee;
+      iCumGoodMarketVariableServiceFee +=  iGoodMarketVariableServiceFee;
+      
+      let iFixexServiceFee = this.fixexServiceFee(today, iyear);
+
       
       let iTxCost = this.txCost(iDeposit);
       let iTxDiscount = this.txDiscount(iTxCost);
       let iTax = this.tax * iDeposit;
       let iCurrencyCost = this.currencyCost * iDeposit;
-      this.portfolio.push( {
+      let iTotalFixedCost = + iTxCost - iTxDiscount + iCurrencyCost +  iFixexServiceFee + iTax;
+
+      iTotalBadMarketCost =  iBadMarketVariableServiceFee + iTotalFixedCost;
+      iTotalNutralMarketCost =  iNutralMarketVariableServiceFee + iTotalFixedCost;
+      iTotalGoodMarketCost =  iGoodMarketVariableServiceFee + iTotalFixedCost;
+
+      iCumTotalBadMarketCost += iTotalBadMarketCost;
+      iCumTotalNutralMarketCost += iTotalNutralMarketCost;
+      iCumTotalGoodMarketCost += iTotalGoodMarketCost;
+    
+
+
+      this.portfolio.push({
         "year": iyear,
-        "deposit" : iDeposit,
-        "cumDeposit" : iCumDeposit,
-        "badMarketAssets" : iBadmarketAssets,
-        "nutralMarketAssets" : iNutralMarketAssets,
-        "goodMarketAssets" : iGoodMarketAssets,
+        "deposit": iDeposit,
+        "cumDeposit": iCumDeposit,
+        "badMarketAssets": iBadmarketAssets,
+        "nutralMarketAssets": iNutralMarketAssets,
+        "goodMarketAssets": iGoodMarketAssets,
         "fixedServiceFee": iFixexServiceFee,
-        "variableServiceFee": iVariableServiceFee,
-        "txCost" : iTxCost,
-        "tax" : iTax,
-        "currencyCost" : iCurrencyCost,
-        "txDiscount" : iTxDiscount
+        
+        "badMarketVariableServiceFee": iBadMarketVariableServiceFee,
+        "nutralMarketVariableServiceFee" : iNutralMarketVariableServiceFee,
+        "goodMarketVariableServiceFee" : iGoodMarketVariableServiceFee,
+        
+        "cumBadMarketVariableServiceFee" : iCumBadMarketVariableServiceFee,
+        "cumNutralMarketVariableServiceFee" : iCumNutralMarketVariableServiceFee,
+        "cumGoodMarketVariableServiceFee" : iCumGoodMarketVariableServiceFee,
+
+        "totalBadMarketCost" : iTotalBadMarketCost,
+        "totalNutralMarketCost" : iTotalNutralMarketCost,
+        "totalGoodMarketCost" : iTotalGoodMarketCost,
+        
+        "cumTotalBadMarketCost" : iCumTotalBadMarketCost,
+        "cumTotalNutralMarketCost" : iCumTotalNutralMarketCost,
+        "cumTotalGoodMarketCost" : iCumTotalGoodMarketCost,
+        
+
+        "txCost": iTxCost,
+        "tax": iTax,
+        "currencyCost": iCurrencyCost,
+        "txDiscount": iTxDiscount
+
       });
       iPastDeposit = iDeposit;
-      
+
     }
-    //this.totalCumAssets = iCumAsset;
+    this.totalCumDeposit = iCumDeposit;
   }
 
 
 
-  year(i: number){
-   
+  year(i: number) {
+
     return this.startyear + i;
   }
 
@@ -262,32 +335,32 @@ export class InvestmentComponent implements OnInit {
     return  asset; 
   }
 */
-  deposit (i: number,iStartAsset){
+  deposit(i: number, iStartAsset) {
     let deposit = 0;
-    if (i==0) 
-    deposit = this.oneTimeDeposit;
-    deposit +=  this.recurringDeposit;  // multiply by * 12 is period is one month
-    return  deposit; 
+    if (i == 0)
+      deposit = this.oneTimeDeposit;
+    deposit += this.recurringDeposit;  // multiply by * 12 is period is one month
+    return deposit;
   }
 
-/*
-  cumAsset (i,a) {
-    let asset = a;
-    if (i>=0)
-      asset += this.portfolio[i].cumAsset;
-
-    return asset;
-  }
-*/
-  cumDeposit(i,a) {
+  /*
+    cumAsset (i,a) {
+      let asset = a;
+      if (i>=0)
+        asset += this.portfolio[i].cumAsset;
+  
+      return asset;
+    }
+  */
+  cumDeposit(i, a) {
     let deposit = a;
-    if (i>=0)
-    deposit += this.portfolio[i].cumDeposit;
+    if (i >= 0)
+      deposit += this.portfolio[i].cumDeposit;
 
     return deposit;
   }
-  
-  fixexServiceFee(d:Date,year) {
+
+  fixexServiceFee(d: Date, year) {
     //console.log(d.getFullYear());
     let ifixexServiceFee = 0;
 
@@ -298,40 +371,40 @@ export class InvestmentComponent implements OnInit {
     }
     return ifixexServiceFee;
   }
-  variableServiceFee (totalAsset:number) {
+  variableServiceFee(totalAsset: number) {
     return (totalAsset * this.variableServiceFeePercentage);
   }
-   
+
   txDiscount(txCost) {
     let iTxDiscount = 0;
 
     if (this.discountLevels) {
       for (let index = 0; index < this.discountLevels.length; index++) {
         let iDiscountLevel = this.discountLevels[index];
-        
-        if (txCost > iDiscountLevel.lowerBand ) { // dicount applies
-          if (txCost >  iDiscountLevel.upperBand) { //full discount applies
-            
+
+        if (txCost > iDiscountLevel.lowerBand) { // dicount applies
+          if (txCost > iDiscountLevel.upperBand) { //full discount applies
+
             iTxDiscount += (iDiscountLevel.upperBand - iDiscountLevel.lowerBand) * iDiscountLevel.variableDiscount;
-            
-          
-            
+
+
+
 
           } else { //some discount applies
-            iTxDiscount +=  (txCost - iDiscountLevel.lowerBand) * iDiscountLevel.variableDiscount;
-            
+            iTxDiscount += (txCost - iDiscountLevel.lowerBand) * iDiscountLevel.variableDiscount;
+
 
           }
         }
 
-        
-      
+
+
       }
     }
     return iTxDiscount;
   }
 
-  txCost (asset : number) {
+  txCost(asset: number) {
     //console.log("start txCost")
     let icost = 0;
     let itax = 0;
@@ -346,54 +419,54 @@ export class InvestmentComponent implements OnInit {
     // loop 2 though that list of prices and calculat the price of the 
     // 
     for (let index = 0; index < this.assetAllocationList.length; index++) {
-      
+
       const assetAllocation = this.assetAllocationList[index];
-      
+
       const instrumentPrices = this.priceList.filter(instrument => instrument.instrumentName == assetAllocation.assetName);
       // make sure a instrument type can have more than one cost by handling an array as a result from the filte
       //console.log(assetAllocation.percentage);
-      
+
       //console.log(instrumentPrices);
       if (instrumentPrices) {
         //console.log("yes! instrumentPrices")
         let instrumentPrice = instrumentPrices[0];
         //console.log(instrumentPrice)
         switch (instrumentPrice.costType) {
-          case "fixed" :
+          case "fixed":
             //console.log("fixed cost <===");
             //console.log(instrumentPrice.cost + " * " + assetAllocation.percentage + " * " +  this.transactions);
             // only price transactions if assest <> 0
-            if (asset > 0) 
-                icost += instrumentPrice.cost * assetAllocation.percentage * this.transactions;
+            if (asset > 0)
+              icost += instrumentPrice.cost * assetAllocation.percentage * this.transactions;
             else
-                icost += 0;
+              icost += 0;
             break;
-          case "variable" :
+          case "variable":
             //console.log("variable cost <===");
             //console.log(this.transactions);
-            
-            let iAssetcost = asset /  (this.transactions  * assetAllocation.percentage)  * instrumentPrice.costPercentage ;
-             //console.log(iAssetcost + " = " + instrumentPrice.minCost + " < " + asset + " / (" + this.transactions  + " * " + assetAllocation.percentage + ")  * " +  instrumentPrice.costPercentage );
+
+            let iAssetcost = asset / (this.transactions * assetAllocation.percentage) * instrumentPrice.costPercentage;
+            //console.log(iAssetcost + " = " + instrumentPrice.minCost + " < " + asset + " / (" + this.transactions  + " * " + assetAllocation.percentage + ")  * " +  instrumentPrice.costPercentage );
             //console.log (" min (" +instrumentPrice.minCost +")" );
             //console.log (" max (" +instrumentPrice.maxCost +")" );
-             if (iAssetcost != 0) {
-              iAssetcost = Math.max(iAssetcost,instrumentPrice.minCost)
-              iAssetcost = Math.min(iAssetcost,instrumentPrice.maxCost)
+            if (iAssetcost != 0) {
+              iAssetcost = Math.max(iAssetcost, instrumentPrice.minCost)
+              iAssetcost = Math.min(iAssetcost, instrumentPrice.maxCost)
             }
-            icost += iAssetcost * (this.transactions  * assetAllocation.percentage);
+            icost += iAssetcost * (this.transactions * assetAllocation.percentage);
             //console.log(icost);
             break;
-          
+
 
         }
       }
-      
-      
+
+
     }
     return icost;
   }
 
-  
+
 
 
 }
