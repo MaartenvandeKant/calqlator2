@@ -33,7 +33,7 @@
     
   ],
   "tax" : 0.001,
-  "currency" : 0.002,
+  "currency" : 0.001,
   "discountLevels": [
     {
       "lowerBand": 0,
@@ -54,7 +54,7 @@
     
   ],
   "variableServiceFeePercentage": 0.01,
-  "fixedMonthlyServiceFee" : 10
+  "fixedMonthlyServiceFee" : 1
 },
 "ZBP" : {
   "priceList": [
