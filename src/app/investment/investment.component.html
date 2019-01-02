@@ -35,19 +35,32 @@
     </td>
     <td>
 
-        <div class="container">
-            <div class="col-sm-4 text-center">
-              <h2 class="text-center">{{product}}</h2>
-              <canvas baseChart
-                    [datasets]="barChartData"
-                    [labels]="barChartLabels"
-                    [chartType]="barChartType"
-                    [options]="barChartOptions"
-                    [colors]="barChartColors"
-                    (chartHover)="chartHovered($event)"
-                    (chartClick)="chartClicked($event)"></canvas>
-                </div>
-          </div>
+
+        <mat-card class="iot-card">
+            <mat-card-header>
+        
+              <mat-card-subtitle> {{product}} Bar chart</mat-card-subtitle>
+            </mat-card-header>
+            <mat-card-content>
+                <div class="container">
+                    <div class="col-sm-4 text-center">
+                     
+                      <canvas baseChart
+                            [datasets]="barChartData"
+                            [labels]="barChartLabels"
+                            [chartType]="barChartType"
+                            [options]="barChartOptions"
+                            [colors]="barChartColors"
+                            (chartHover)="chartHovered($event)"
+                            (chartClick)="chartClicked($event)"></canvas>
+                        </div>
+                  </div>
+                
+            
+            </mat-card-content>
+          </mat-card>
+
+
           
 
     </td>
@@ -189,3 +202,9 @@
 </tr>
 </table>
 <p>-</p>
+
+
+
+
+
+

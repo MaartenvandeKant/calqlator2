@@ -39,8 +39,8 @@ public barChartOptions:any = {
   };
 // public barChartData:any[] = [[65, 59, 80, 81, 56, 55, 40],[65, 59, 80, 81, 56, 55, 40]];
 
-color1 : string = 'rgba(0, 98, 95, .8)';
-color2 : string = 'rgba(0, 139, 124, .8)';
+color1 : string = 'rgba(0, 95, 95, .99)';
+color2 : string = 'rgba(0, 139, 124, .99)';
 
 public barChartData:any[] = [{data : [65, 70, 80], label: "Assets"},
 {data: [5,6,7,], label : "Costs"}];
@@ -72,9 +72,28 @@ public barChartData:any[] = [{data : [65, 70, 80], label: "Assets"},
   @Input('product') product: string;
 
 
-  goodMarketFactor: number = 1.1;
+  /*goodMarketFactor: number = 1.1;
   nutralMarketFactor: number = 1;
   badMarketFactor: number = 0.95;
+*/
+  
+marketFactor(market : string, risk : number) {
+    /*          bad               nutral        good
+      risk 1    0  + 1           1          0,5  1,5
+      risk 2    -5   + 1,5           1          0     1,5
+      risk 3    -1,5 +    
+    */
+    //console.log (market);
+    let marketFactor = 0;
+    if (market == 'nutral') {
+      marketFactor = 0.01 + (risk*0.01) 
+    }
+    if (market == 'good') {
+      marketFactor = 0.02 + (risk*0.02) 
+    }
+    return marketFactor; 
+
+  }
 
 
 
@@ -309,9 +328,9 @@ public barChartData:any[] = [{data : [65, 70, 80], label: "Assets"},
       iGoodMarketAssets += iDeposit;
 
 
-      iBadMarketAssets = iBadMarketAssets * this.badMarketFactor;
-      iNutralMarketAssets = iNutralMarketAssets * this.nutralMarketFactor;
-      iGoodMarketAssets = iGoodMarketAssets * this.goodMarketFactor;
+      iBadMarketAssets = iBadMarketAssets + iBadMarketAssets * this.marketFactor('bad',this.riskLevel);
+      iNutralMarketAssets = iNutralMarketAssets + iNutralMarketAssets * this.marketFactor('nutral', this.riskLevel);
+      iGoodMarketAssets = iNutralMarketAssets +iGoodMarketAssets * this.marketFactor('good', this.riskLevel);
 
 
       iBadMarketVariableServiceFee = + this.variableServiceFee(iBadMarketAssets);
