@@ -23,41 +23,42 @@ import { Options } from 'ng5-slider';
 
 export class InvestmentComponent implements OnInit {
 
-
-  public barChartLabels: string[] = ["bad market","Nutral Market", "Good Maerket"];
-  public barChartData: number[][] = [[21, 39, 30],[5,26,65]];
-  public barChartType: string = 'bar';
-  public barChartSeries : string [] =  ["series 1","series 2"];
-  public barChartOptions: any =  {
-    scales: {
-        xAxes: [{
-            stacked: true, // change to false
-            ticks : {
-                beginAtZero: true
-            }
+public barChartLabels:string[] = ['Bad Market', 'Nutral Market', 'Good Market'];
+public barChartType:string = 'bar';
+public barChartLegend:boolean = true;
+public barChartOptions:any = {        
+    responsive: true,
+    scales:{
+        xAxes:[{
+            stacked:true
         }],
-        yAxes: [{
-            stacked: true,
-            ticks : {
-                beginAtZero: true
-            }
+        yAxes:[{
+            stacked:true
         }]
     }
-};
+  };
+// public barChartData:any[] = [[65, 59, 80, 81, 56, 55, 40],[65, 59, 80, 81, 56, 55, 40]];
 
+color1 : string = 'rgba(0, 98, 95, .8)';
+color2 : string = 'rgba(0, 139, 124, .8)';
+
+public barChartData:any[] = [{data : [65, 70, 80], label: "Assets"},
+{data: [5,6,7,], label : "Costs"}];
 
 
   public barChartColors: any = [
     {
-      backgroundColor: 'rgba(103, 103, 183, .5)',
-      borderColor: 'rgb(103, 58, 183)',
-      pointBackgroundColor: 'rgb(103, 58, 183)',
-      pointBorderColor: '#fff',
-      pointHoverBackgroundColor: '#fff',
-      pointHoverBorderColor: 'rgba(103, 58, 183, .8)'
+      backgroundColor: this.color1,
+      borderColor: this.color2,
+    },
+    {
+      backgroundColor: this.color2,
+      borderColor: this.color1,
     }
-    // ...colors for additional data sets
+   
   ];
+
+
   // events on slice click
   public chartClicked(e: any): void {
     console.log(e);
@@ -386,15 +387,31 @@ export class InvestmentComponent implements OnInit {
     this.cumTotalBadMarketCosts = iCumTotalBadMarketCost;
     this.cumTotalNutralMarketCosts = iCumTotalNutralMarketCost;
     this.cumTotalGoodMarketCosts = iCumTotalGoodMarketCost;
-    /*
-    this.barChartData = [
-      this.cumTotalBadMarketAssets,
-      this.cumTotalNutralMarketAssets,
-      this.cumTotalGoodMarketAssets
-    ];
-    */
+    
+     
+    /*this.barChartData = [
+      this.cumTotalBadMarketAssets - this.cumTotalBadMarketCosts ,
+      this.cumTotalNutralMarketAssets - this.cumTotalNutralMarketCosts ,
+      this.cumTotalGoodMarketAssets - this.cumTotalGoodMarketCosts ];
+  */
+ /*
+ this.barChartData = [
+    {data : [this.cumTotalBadMarketAssets -     this.cumTotalBadMarketCosts,      this.cumTotalBadMarketCosts], label: "Bad"},
+    {data : [this.cumTotalNutralMarketAssets -  this.cumTotalNutralMarketCosts ,  this.cumTotalNutralMarketCosts ], label : "Nutral"},
+    {data : [this.cumTotalGoodMarketAssets -    this.cumTotalGoodMarketCosts ,    this.cumTotalGoodMarketCosts ], label : "Good"}];
 
   }
+*/
+  this.barChartData = [
+    {data : [this.cumTotalBadMarketAssets,    this.cumTotalNutralMarketAssets,      this.cumTotalGoodMarketAssets], 
+      label: "Assets",
+      backgroundColor: 'window.chartColors.blue'},
+    {data : [this.cumTotalBadMarketCosts ,  this.cumTotalNutralMarketCosts ,  this.cumTotalGoodMarketCosts ], 
+      label : "Costs",
+      backgroundColor: 'rgba(60, 60, 80, 0.1)'
+    }
+  ];
+}
 
 
 

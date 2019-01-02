@@ -39,7 +39,7 @@
             <div class="col-sm-4 text-center">
               <h2 class="text-center">PIE chart using Chartjs and Angular 6</h2>
               <canvas baseChart
-                    [data]="barChartData"
+                    [datasets]="barChartData"
                     [labels]="barChartLabels"
                     [chartType]="barChartType"
                     [options]="barChartOptions"
@@ -49,10 +49,6 @@
                 </div>
           </div>
           
-
-      {{cumTotalDeposit | currency:"EUR" }} 
-      {{cumTotalNutralMarketAssets | currency:"EUR"}}
-      {{cumTotalNutralMarketCosts | currency:"EUR"}}
 
     </td>
   </tr>
