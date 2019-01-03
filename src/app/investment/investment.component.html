@@ -19,11 +19,11 @@
           <p align="center"> {{transactions}} transactions per year
             <ng5-slider [(value)]="transactions" [options]="transactionOptions" (valueChange)="recalculate()"></ng5-slider>
           </p>
-          <p align="center">
-            {{oneTimeDeposit | currency:"EUR" : symbol:"1.0-0" }} One Time Deposit
+          <p align="center"> 
+            {{oneTimeDeposit | currency:"EUR"  }} One Time Deposit
             <ng5-slider [(value)]="oneTimeDeposit" [options]="oneTimeDepositOptions" (valueChange)="recalculate()"></ng5-slider>
           </p>
-          <p align="center">Yearly recurring investment: {{recurringDeposit| currency:"EUR": symbol:"1.0-0"}}
+          <p align="center">Yearly recurring investment: {{recurringDeposit| currency:"EUR"}}
             <ng5-slider [(value)]="recurringDeposit" [options]="recurringDepositOptions" (valueChange)="recalculate()"></ng5-slider>
           </p>
           <p align="center">Risk: {{riskLevel}}
@@ -81,7 +81,7 @@
     <th>Cum Deposit</th>
     <th> - </th>
     <th>Total Assets</th>
-    <th>-</th>
+    <th> </th>
     <th>Var S. Fee</th>
     <th>Cum Var S. Fee</th>
     <th>Fix S. Fee</th>
@@ -90,7 +90,7 @@
     <th>Tx Dis.</th>
     <th>Tax</th>
     <th>Cur Cost</th>
-    <th>-</th>
+    <th> </th>
     <th>Total Costs</th>
     <th>Cum Total Costs</th>
 
@@ -99,19 +99,19 @@
     <td>{{p.year}}
 
     </td>
-    <td>{{p.deposit | currency:"EUR": symbol:"1.0-0"}} <br>
-      {{p.deposit | currency:"EUR": symbol:"1.0-0"}}<br>
-      {{p.deposit | currency:"EUR": symbol:"1.0-0"}}</td>
+    <td>{{p.deposit | currency:"EUR"}} <br>
+      {{p.deposit | currency:"EUR"}}<br>
+      {{p.deposit | currency:"EUR"}}</td>
     <td>{{p.cumDeposit | currency:"EUR"}}<br>
       {{p.cumDeposit | currency:"EUR"}}<br>
       {{p.cumDeposit | currency:"EUR"}}</td>
     <td></td>
     <td>
-      {{p.badMarketAssets | currency:"EUR": symbol:"1.0-0"}}<br>
-      {{p.nutralMarketAssets | currency:"EUR": symbol:"1.0-0"}}<br>
-      {{p.goodMarketAssets | currency:"EUR": symbol:"1.0-0"}}
+      {{p.badMarketAssets | currency:"EUR"}}<br>
+      {{p.nutralMarketAssets | currency:"EUR"}}<br>
+      {{p.goodMarketAssets | currency:"EUR"}}
     </td>
-    <td>-</td>
+    <td> </td>
 
     <td>
       {{p.badMarketVariableServiceFee | currency:"EUR"}} <br>
@@ -130,7 +130,7 @@
     <td>{{p.txDiscount | currency:"EUR"}}</td>
     <td>{{p.tax | currency:"EUR"}}</td>
     <td>{{p.currencyCost | currency:"EUR"}}</td>
-    <td>-</td>
+    <td></td>
     <td>
       {{p.totalBadMarketCost| currency:"EUR"}}<br>
       {{p.totalNutralMarketCost| currency:"EUR"}}<br>
@@ -182,7 +182,7 @@
 
 
           </mat-expansion-panel>
-          <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
+          <mat-expansion-panel (opened)="true" (closed)="false">
             <mat-expansion-panel-header>
               <mat-panel-title>
                 Price Configuration Json
