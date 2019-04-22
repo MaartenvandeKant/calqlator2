@@ -61,21 +61,23 @@
     {
       "instrumentName": "Dutch Shares",
       "costType": "variable",
-      "minCost": 10,
+      "startingCost" :5,
+      "minCost": 0,
       "maxCost": 20,
-      "costPercentage" : "2"
+      "costPercentage" : 0.00000
     },
     {
       "instrumentName": "English Shares",
       "costType": "fixed",
-      "cost": 80
+      "cost": 8
     },
     {
       "instrumentName": "Irish Shares",
       "costType": "variable",
-      "minCost": 100,
-      "maxCost": 1000,
-      "costPercentage" : "0.1"
+      "minCost": 0,
+      "startingCost" :10,
+      "maxCost": 1000000,
+      "costPercentage" : 0.0005
     },
     {
       "instrumentName": "ETF",
@@ -111,8 +113,8 @@
     
     
   ],
-  "variableServiceFeePercentage": 0.1,
-  "fixedMonthlyServiceFee" : 100
+  "variableServiceFeePercentage": 0.01,
+  "fixedMonthlyServiceFee" : 0
 }
 
 

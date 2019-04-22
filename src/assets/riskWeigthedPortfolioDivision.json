@@ -50,7 +50,7 @@
             "percentage": 0.5
           },
           {
-            "assetName": "ETF",
+            "assetName": "Irish Shares",
             "percentage": 0.5
           }
         ]
@@ -59,11 +59,16 @@
         "riskLevel": 2,
         "assetAlocation": [
           {
-            "assetName": "Dutch Shares",
-            "percentage": 0
-          },
+            "assetName": "English Shares",
+            "percentage": 1
+          }
+        ]
+      },
+      {
+        "riskLevel": 5,
+        "assetAlocation": [
           {
-            "assetName": "ETF",
+            "assetName": "Irish Shares",
             "percentage": 1
           }
         ]
@@ -71,3 +76,4 @@
     ]
   }
 }
+

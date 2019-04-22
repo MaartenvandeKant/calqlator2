@@ -124,7 +124,7 @@ marketFactor(market : string, risk : number) {
 
   transactionOptions: Options = {
     floor: 0,
-    ceil: 300,
+    ceil: 25,
     showTicks: false,
     keyboardSupport: false,
     showSelectionBar: false
@@ -232,6 +232,7 @@ marketFactor(market : string, risk : number) {
   public cumTotalBadMarketCosts: number;
   public cumTotalGoodMarketCosts: number;
 
+  public productOptions : any;
 
   public chart: any;
 
@@ -270,16 +271,26 @@ marketFactor(market : string, risk : number) {
       this.fixedMonthlyServiceFee = data[this.product].fixedMonthlyServiceFee;
       console.log("receiving pricelist");
       console.log(this.priceList);
-      this.recalculate();
+      //this.recalculate();
+    });
+
+    this.ConfigService.getJSON("./assets/productoptions.json").subscribe(data => {
+      console.log("receiving product Options");
+      console.log("===>=", data)
+      this.productOptions = data.productOptions[this.product][0];
+      console.log("product options for this product");
+      console.log(this.productOptions);
+      console.log(this.productOptions.transactionCostPercentage)
+      
     });
 
 
-
+    this.recalculate();
   }
 
 
   recalculate() {
-    //console.log("recalculate")
+    console.log(" ================ starting Cost calculation for", this.product)
     this.portfolio = []
     let iPastAsset = 0;
     let iDeposit = 0;
@@ -320,7 +331,9 @@ marketFactor(market : string, risk : number) {
 
     let today = new Date();
     for (let index = 0; index < this.period; index++) {
+      console.log("calculation for year", index)
       let iyear = this.year(index);
+      console.log("calculation for year", iyear)
 
       let iDeposit = this.deposit(index, iPastDeposit);
       iCumDeposit = this.cumDeposit(index - 1, iDeposit);
@@ -344,10 +357,11 @@ marketFactor(market : string, risk : number) {
       iCumNutralMarketVariableServiceFee += iNutralMarketVariableServiceFee;
       iCumGoodMarketVariableServiceFee += iGoodMarketVariableServiceFee;
 
+      console.log("calculation Fixed Services Fees");
       let iFixexServiceFee = this.fixexServiceFee(today, iyear);
 
-
-      let iTxCost = this.txCost(iDeposit);
+      console.log("calculation transcations costs")
+      let iTxCost = this.txCost(iCumDeposit);
       let iTxDiscount = this.txDiscount(iTxCost);
       let iTax = this.tax * iDeposit;
       let iCurrencyCost = this.currencyCost * iDeposit;
@@ -518,7 +532,7 @@ marketFactor(market : string, risk : number) {
     return iTxDiscount;
   }
 
-  txCost(asset: number) {
+  txCost(totalAsset: number) {
     //console.log("start txCost")
     let icost = 0;
     let itax = 0;
@@ -527,21 +541,23 @@ marketFactor(market : string, risk : number) {
 
 
     //Lets get the right asset mix from the assetAllocationListForAllRisks
-    console.log("Risk associated asset allocation list");
-    console.log(this.assetAllocationListForAllRisks);
+    //console.log("Risk associated asset allocation list");
+    //console.log(this.assetAllocationListForAllRisks);
 
 
-
+    console.log(" calulating transactions cost for product ",this.product)
+    console.log(" finiding the applicable risk ralated assetallocations. Risk Level:",this.riskLevel)
+    let iFoundRiskRelatedAssetAlocations = false;
     for (let r = 0; r < this.assetAllocationListForAllRisks.length; r++) {
       // this is a nasty way to make sure that at least one portfolio match the risk
       // if  it's the right one we stop the for loop
       this.assetAllocationList = this.assetAllocationListForAllRisks[r].assetAlocation;
-      
       if (this.assetAllocationListForAllRisks[r].riskLevel == this.riskLevel)
       {
-        console.log("found a match xxxxxxxxx");
+        console.log(" FoundRiskRelatedAssetAlocations found!!!");
         //console.log(this.assetAllocationListForAllRisks[r].riskLevel)
         //console.log(this.assetAllocationList);
+        iFoundRiskRelatedAssetAlocations = true;
         break;
       }
       
@@ -549,8 +565,13 @@ marketFactor(market : string, risk : number) {
       //console.log(this.riskLevel);
       //console.log(this.assetAllocationList);
     }
+    if (!iFoundRiskRelatedAssetAlocations) {
+      console.log(" No risk related asses allocations found !!!");
+      console.log(" using default");
+    }
     
-
+    console.log(" calulating transactions cost for ",this.product," and for  ",this.assetAllocationList.length, "Assets")
+      
     // def: instrument is a type of stock
     // def: asset is a stock that is part of a portfolio
     //
@@ -562,48 +583,104 @@ marketFactor(market : string, risk : number) {
 
 
 
-
+    console.log( " lets iterate over the assets that are alocated")
     for (let index = 0; index < this.assetAllocationList.length; index++) {
-
+      console.log( "   asset number",index + 1)
       const assetAllocation = this.assetAllocationList[index];
 
       const instrumentPrices = this.priceList.filter(instrument => instrument.instrumentName == assetAllocation.assetName);
       // make sure a instrument type can have more than one cost by handling an array as a result from the filte
-      //console.log(assetAllocation.percentage);
+      console.log("     Name", assetAllocation.assetName);
+      console.log("     share of portfolio:", assetAllocation.percentage);
+      
 
       //console.log(instrumentPrices);
       if (instrumentPrices) {
         //console.log("yes! instrumentPrices")
         let instrumentPrice = instrumentPrices[0];
-        //console.log(instrumentPrice)
+        
+        
         switch (instrumentPrice.costType) {
           case "fixed":
-            //console.log("fixed cost <===");
-            //console.log(instrumentPrice.cost + " * " + assetAllocation.percentage + " * " +  this.transactions);
+            console.log("     Cost type is Fixed");
+            console.log("     Price", instrumentPrice.cost);
+            
+            console.log("     ",instrumentPrice.cost + " * " + assetAllocation.percentage + " * " +  this.transactions);
             // only price transactions if assest <> 0
-            if (asset > 0)
+            if (totalAsset > 0)
               icost += instrumentPrice.cost * assetAllocation.percentage * this.transactions;
             else
               icost += 0;
             break;
+
           case "variable":
+             console.log("     Cost type is Variable");
+             console.log("     Cost is ", instrumentPrice.costPercentage," of single order amount ");
             //console.log("variable cost <===");
             //console.log(this.transactions);
 
-            let iAssetcost = asset / (this.transactions * assetAllocation.percentage) * instrumentPrice.costPercentage;
-            //console.log(iAssetcost + " = " + instrumentPrice.minCost + " < " + asset + " / (" + this.transactions  + " * " + assetAllocation.percentage + ")  * " +  instrumentPrice.costPercentage );
-            //console.log (" min (" +instrumentPrice.minCost +")" );
-            //console.log (" max (" +instrumentPrice.maxCost +")" );
-            if (iAssetcost != 0) {
-              iAssetcost = Math.max(iAssetcost, instrumentPrice.minCost)
-              iAssetcost = Math.min(iAssetcost, instrumentPrice.maxCost)
+            
+            console.log ("     Order number")
+            console.log ("       Total number of transactions in this portfolio:" , this.transactions );
+            let iNumberOfTransactionsInThisInstrument = this.transactions * assetAllocation.percentage;
+            console.log ("       Number of transactions allocated to this instrument ==> #tx (",this.transactions,") * asset allocation (",assetAllocation.percentage,") = " , iNumberOfTransactionsInThisInstrument );
+            console.log ("     Order number ===> ", iNumberOfTransactionsInThisInstrument)
+            
+            console.log ("     Order amount")
+            console.log ("       Assets till now " , totalAsset );
+            console.log ("       part of assets concerend with ordering each year = " , this.productOptions.transactionCostPercentage );
+            let iTotalOrderAmount = this.productOptions.transactionCostPercentage * totalAsset;
+            console.log ("       Assets in orders (assets * % of assests in orders) ", iTotalOrderAmount)
+            let iTotalInstrumentOrderAmount = iTotalOrderAmount / assetAllocation.percentage;
+            console.log ("       Assets in orders in this instrument (Assets in orders",iTotalOrderAmount," / assetAllocation.percentage",assetAllocation.percentage,") ", iTotalInstrumentOrderAmount) 
+            let iSingleTransactionAmount = (this.productOptions.transactionCostPercentage * totalAsset ) / this.transactions
+            console.log ("       Single Order Amount in this" ,iSingleTransactionAmount)
+            console.log ("       Order amount ====>", iSingleTransactionAmount)
+
+            console.log ("     Price")
+            console.log ("        Variable price is ", instrumentPrice.costPercentage," of each order amount (",iSingleTransactionAmount,")");
+            let iVariableOrderCost = instrumentPrice.costPercentage * iSingleTransactionAmount
+            console.log ("        Variable price is ", iVariableOrderCost);
+
+            let iStartingCost = 0;
+            if (instrumentPrice.startingCost) {
+              iStartingCost =instrumentPrice.startingCost;
+              console.log("        It has a Staring Price of", instrumentPrice.startingCost);
+              
             }
-            icost += iAssetcost * (this.transactions * assetAllocation.percentage);
+
+            let iSingleOrderCost = instrumentPrice.startingCost + iVariableOrderCost
+            console.log ("        Single order Cost  ",iSingleOrderCost)
+
+
+            console.log ("        Instrument Minimum Price is ",instrumentPrice.minCost)
+            console.log ("        Instrument Maximum Price is ",instrumentPrice.maxCost)
+
+
+            let iFinalSingleOrderCost = iSingleOrderCost
+            
+            iFinalSingleOrderCost = Math.max(iFinalSingleOrderCost, instrumentPrice.minCost)
+            iFinalSingleOrderCost = Math.min(iFinalSingleOrderCost, instrumentPrice.maxCost)
+            
+
+            console.log ("        Final single order price is (including min,max) ", iFinalSingleOrderCost)
+            
+            let iTotalInstrumentCost = iFinalSingleOrderCost * iNumberOfTransactionsInThisInstrument
+            console.log ("        Total order Cost in this instrument is ", iTotalInstrumentCost)
+            console.log ("        (Single Order Cost (",iFinalSingleOrderCost,") * #Tx in this instrument (",iNumberOfTransactionsInThisInstrument,"))= ")
+            console.log ("        Price ===> ", iTotalInstrumentCost)
+
+            
+            
+            icost += iTotalInstrumentCost
+            console.log ("      ====> Total Order cost cost of ",index + 1," out of ",this.assetAllocationList.length," instuments  ===> ", icost)
             //console.log(icost);
+            console.log ("      =================================");
             break;
 
 
         }
+
       }
 
 
