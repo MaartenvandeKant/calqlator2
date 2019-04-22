@@ -3,8 +3,8 @@
     {
       "instrumentName": "Dutch Shares",
       "costType": "variable",
-      "minCost": 1,
-      "maxCost": 2,
+      "minCost": 10,
+      "maxCost": 10,
       "costPercentage" : "0.2"
     },
     {
@@ -22,7 +22,7 @@
     {
       "instrumentName": "ETF",
       "costType": "fixed",
-      "cost": 4
+      "cost": 1
     },
     {
       "instrumentName": "Fund",

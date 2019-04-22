@@ -1,0 +1,73 @@
+{
+  "portfolioDevision": {
+    "ZBB": [
+      {
+        "riskLevel": 1,
+        "assetAlocation": [
+          {
+            "assetName": "Dutch Shares",
+            "percentage": 0
+          },
+          {
+            "assetName": "ETF",
+            "percentage": 1
+          }
+        ]
+      },
+      {
+        "riskLevel": 2,
+        "assetAlocation": [
+          {
+            "assetName": "Dutch Shares",
+            "percentage": 0.5
+          },
+          {
+            "assetName": "ETF",
+            "percentage": 0.5
+          }
+        ]
+      },
+      {
+        "riskLevel": 4,
+        "assetAlocation": [
+          {
+            "assetName": "Dutch Shares",
+            "percentage": 0
+          },
+          {
+            "assetName": "ETF",
+            "percentage": 1
+          }
+        ]
+      }
+    ],
+    "ZBP": [
+      {
+        "riskLevel": 1,
+        "assetAlocation": [
+          {
+            "assetName": "Dutch Shares",
+            "percentage": 0.5
+          },
+          {
+            "assetName": "ETF",
+            "percentage": 0.5
+          }
+        ]
+      },
+      {
+        "riskLevel": 2,
+        "assetAlocation": [
+          {
+            "assetName": "Dutch Shares",
+            "percentage": 0
+          },
+          {
+            "assetName": "ETF",
+            "percentage": 1
+          }
+        ]
+      }
+    ]
+  }
+}

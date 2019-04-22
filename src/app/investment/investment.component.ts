@@ -147,9 +147,9 @@ marketFactor(market : string, risk : number) {
 
   riskLevelOptions: Options = {
     floor: 1,
-    ceil: 6,
+    ceil: 2,
     step: 1,
-    minLimit: 1,
+    minLimit: 0,
     showTicks: false,
     showTicksValues: true,
     showSelectionBar: true,
@@ -219,6 +219,7 @@ marketFactor(market : string, risk : number) {
   public currencyCost: number;
 
   assetAllocationList = [];
+  assetAllocationListForAllRisks =[];
   startyear: number = 2018
   public portfolio: any;
   priceList: any;
@@ -252,11 +253,12 @@ marketFactor(market : string, risk : number) {
     console.log(this.product);
 
     //this.productCode = this.product;
-    this.ConfigService.getJSON("./assets/portfoliodivision.json").subscribe(data => {
-      this.assetAllocationList = data.portfolioDevision[this.product];
+    this.ConfigService.getJSON("./assets/riskWeigthedPortfolioDivision.json").subscribe(data => {
+      this.assetAllocationListForAllRisks = data.portfolioDevision[this.product];
+     //this.assetAllocationList = data.portfolioDevision[this.product];
       this.portfolioJson = data;
-      console.log("receiving assetAllocationList");
-      console.log(this.assetAllocationList);
+      console.log("receiving riskbased assetAllocationList");
+      console.log(this.assetAllocationListForAllRisks);
     });
     this.ConfigService.getJSON("./assets/tx_prices.json").subscribe(data => {
       this.priceJson = data;
@@ -523,6 +525,32 @@ marketFactor(market : string, risk : number) {
     let iDiscount = 0;
     //console.log(this.assetAllocationList);
 
+
+    //Lets get the right asset mix from the assetAllocationListForAllRisks
+    console.log("Risk associated asset allocation list");
+    console.log(this.assetAllocationListForAllRisks);
+
+
+
+    for (let r = 0; r < this.assetAllocationListForAllRisks.length; r++) {
+      // this is a nasty way to make sure that at least one portfolio match the risk
+      // if  it's the right one we stop the for loop
+      this.assetAllocationList = this.assetAllocationListForAllRisks[r].assetAlocation;
+      
+      if (this.assetAllocationListForAllRisks[r].riskLevel == this.riskLevel)
+      {
+        console.log("found a match xxxxxxxxx");
+        //console.log(this.assetAllocationListForAllRisks[r].riskLevel)
+        //console.log(this.assetAllocationList);
+        break;
+      }
+      
+      //console.log("asset allocation list =======");
+      //console.log(this.riskLevel);
+      //console.log(this.assetAllocationList);
+    }
+    
+
     // def: instrument is a type of stock
     // def: asset is a stock that is part of a portfolio
     //
@@ -530,6 +558,11 @@ marketFactor(market : string, risk : number) {
     // for each element(instrument) in the example portfolio get the list off prices that are associated with that asses based on its name
     // loop 2 though that list of prices and calculat the price of the 
     // 
+
+
+
+
+
     for (let index = 0; index < this.assetAllocationList.length; index++) {
 
       const assetAllocation = this.assetAllocationList[index];
