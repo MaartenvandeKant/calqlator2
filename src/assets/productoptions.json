@@ -4,14 +4,28 @@
       {
         "screenName": "Zelf Beleggen Basis",
         "productOption1": "some thing",
-        "transactionCostPercentage" : 0.2
+        "transactionCostPercentage" : 0.2,
+        "riskLevels": [
+      
+          
+          { "value": 2, "legend": "Mild" },
+          { "value": 4, "legend": "Gemiddeld" },
+          { "value": 6, "legend": "Pittig" }
+        ]
       }
     ],
     "ZBP": [ 
     {
       "screenName": "Zelf Beleggen plus",
       "productOption1": "some thing else",
-      "transactionCostPercentage" : 0.1
+      "transactionCostPercentage" : 0.1,
+      "riskLevels": [
+      
+          
+        { "value": 2, "legend": "Mild" },
+        { "value": 4, "legend": "Matig" },
+        { "value": 6, "legend": "Pitig" }
+      ]
       }
       
     ]

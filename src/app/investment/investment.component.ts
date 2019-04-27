@@ -1,6 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { ConfigService } from '../iot.service';
 import { Options } from 'ng5-slider';
+import { AngularWaitBarrier } from 'blocking-proxy/built/lib/angular_wait_barrier';
 
 
 
@@ -113,6 +114,8 @@ marketFactor(market : string, risk : number) {
     { rangeLow: 1000, rangeHigh: 5000, rangeStep: 200 }
   ]);
 
+  
+
   periodOptions: Options = {
     minLimit: 2,
     floor: 0,
@@ -143,26 +146,28 @@ marketFactor(market : string, risk : number) {
     }
   };
 
+  
+  
+  public riskLevelArray: any [] = [
+      
+    { value: 2, legend: 'Defensief' },
+   
+    { value: 4, legend: 'Matig offensief' },
+   
+    { value: 6, legend: 'Zeer offensief' }
+  ]
 
 
-  riskLevelOptions: Options = {
-    floor: 1,
-    ceil: 2,
-    step: 1,
+  public riskLevelOptions: Options = {
+    floor: 2,
+    ceil: 6,
+    step: 2,
     minLimit: 0,
     showTicks: false,
     showTicksValues: true,
     showSelectionBar: true,
     keyboardSupport: false,
-    stepsArray: [
-      { value: 1, legend: 'Zeer defensief' },
-      { value: 2, legend: 'Defensief' },
-      { value: 3, legend: 'Matig defensief' },
-      { value: 4, legend: 'Matig offensief' },
-      { value: 5, legend: 'Offensief' },
-      { value: 6, legend: 'Zeer offensief' }
-    ],
-
+    
     selectionBarGradient: {
       from: 'green',
       to: 'red'
@@ -184,6 +189,8 @@ marketFactor(market : string, risk : number) {
     }
   };
 
+
+  
 
 
   createStepRange(rangeList: Array<{ rangeLow, rangeHigh, rangeStep }>): number[] {
@@ -275,7 +282,6 @@ marketFactor(market : string, risk : number) {
       this.discountLevels = data[this.product].discountLevels;
       this.variableServiceFeePercentage = data[this.product].variableServiceFeePercentage;
       this.fixedMonthlyServiceFee = data[this.product].fixedMonthlyServiceFee;
-      
       console.log("  ",this.priceList);
       //this.recalculate();
     });
@@ -284,8 +290,15 @@ marketFactor(market : string, risk : number) {
     this.ConfigService.getJSON("./assets/productoptions.json").toPromise().then(data => {
       console.log("  Getting product Options");
       this.productOptions = data.productOptions[this.product][0];
-      console.log("  ",this.productOptions);
+      console.log("  ",this.productOptions); 
+      //console.log("  ",this.productOptions.riskLevels);
+      //console.log("  ",this.riskLevelOptions.stepsArray);
+      //console.log("  ",this.riskLevelOptions.stepsArray);
+      this.riskLevelOptions.stepsArray = Object.assign([],this.productOptions.riskLevels)
+      const newOptions: Options = Object.assign({}, this.riskLevelOptions);
+      this.riskLevelOptions = newOptions;
       this.recalculate();
+
     });
 
 
@@ -294,6 +307,7 @@ marketFactor(market : string, risk : number) {
 
 
   recalculate() {
+    
     console.log(" ================ starting Cost calculation for", this.product)
     console.log(" ==============================================", this.product)
   
