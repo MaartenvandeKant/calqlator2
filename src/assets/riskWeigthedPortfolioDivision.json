@@ -2,15 +2,30 @@
   "portfolioDevision": {
     "ZBB": [
       {
-        "riskLevel": 1,
+        "riskLevel": 2,
         "assetAlocation": [
           {
-            "assetName": "Dutch Shares",
-            "percentage": 0
+            "assetName": "Fund of bonds",
+            "percentage": 0.75
           },
           {
-            "assetName": "ETF",
-            "percentage": 1
+            "assetName": "Fund of Stock",
+            "percentage": 0.125
+          }
+          ,
+          {
+            "assetName": "Fund of ETF",
+            "percentage": 0.125
+          }
+          ,
+          {
+            "assetName": "Stock",
+            "percentage": 0
+          }
+          ,
+          {
+            "assetName": "Stock FX",
+            "percentage": 0
           }
         ]
       },

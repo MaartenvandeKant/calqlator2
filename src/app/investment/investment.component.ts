@@ -206,7 +206,7 @@ marketFactor(market : string, risk : number) {
 
 
   public period: number = 2;
-  public riskLevel: number = 3;
+  public riskLevel: number = 1;
   priceJson: string;
   portfolioJson: string;
   public variableServiceFeePercentage: number;

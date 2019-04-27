@@ -59,37 +59,45 @@
 "ZBP" : {
   "priceList": [
     {
-      "instrumentName": "Dutch Shares",
+      "instrumentName": "Fund of Bonds",
       "costType": "variable",
-      "startingCost" :5,
+      "startingCost" :0,
       "minCost": 0,
-      "maxCost": 20,
+      "maxCost": 0,
       "costPercentage" : 0.00000
     },
     {
-      "instrumentName": "English Shares",
-      "costType": "fixed",
-      "cost": 8
+      "instrumentName": "Fund of Stock",
+      "costType": "variable",
+      "startingCost" :0,
+      "minCost": 0,
+      "maxCost": 0,
+      "costPercentage" : 0.00000
     },
     {
-      "instrumentName": "Irish Shares",
+      "instrumentName": "Fund of ETF",
       "costType": "variable",
+      "startingCost" :0,
       "minCost": 0,
-      "startingCost" :10,
-      "maxCost": 1000000,
+      "maxCost": 0,
+      "costPercentage" : 0.00000
+    },
+    {
+      "instrumentName": "Stock",
+      "costType": "variable",
+      "startingCost" :5,
+      "minCost": 0,
+      "maxCost": 100000,
       "costPercentage" : 0.0005
     },
     {
-      "instrumentName": "ETF",
-      "costType": "fixed",
-      "cost": 40
-    },
-    {
-      "instrumentName": "Fund",
-      "costType": "fixed",
-      "cost": 100
+      "instrumentName": "Stocks FC",
+      "costType": "variable",
+      "startingCost" :10,
+      "minCost": 0,
+      "maxCost": 100000,
+      "costPercentage" : 0.001
     }
-
     
   ],
   "tax" : 0.01,
