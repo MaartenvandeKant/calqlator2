@@ -100,23 +100,42 @@
     }
     
   ],
-  "tax" : 0.01,
-  "currency" : 0.02,
+  "tax" : 0.0,
+  "currency" : 0.0,
   "discountLevels": [
     {
       "lowerBand": 0,
       "upperBand": 1000,
-      "variableDiscount" : 0.5
+      "variableDiscount" : 0
     },
     {
       "lowerBand": 1000,
       "upperBand": 5000,
-      "variableDiscount" : 0.1
+      "variableDiscount" : 0
     },
     {
       "lowerBand": 5000,
       "upperBand": 1000000000000,
-      "variableDiscount" : 0.02
+      "variableDiscount" : 0
+    }
+    
+    
+  ],
+  "variableServiceFeeLevels": [
+    {
+      "lowerBand": 0,
+      "upperBand": 100000,
+      "fee" : 0.002
+    },
+    {
+      "lowerBand": 100000,
+      "upperBand": 400000,
+      "fee" : 0.0012
+    },
+    {
+      "lowerBand": 400000,
+      "upperBand": 40000000000,
+      "fee" : 0.0006
     }
     
     

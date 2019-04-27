@@ -2,6 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { ConfigService } from '../iot.service';
 import { Options } from 'ng5-slider';
 import { AngularWaitBarrier } from 'blocking-proxy/built/lib/angular_wait_barrier';
+import { MatCheckbox } from '@angular/material';
 
 // char.js ==> https://www.chartjs.org/docs/latest/axes/cartesian/linear.html
 // ng slide ==> https://angular-slider.github.io/ng5-slider/docs
@@ -227,6 +228,8 @@ marketFactor(market : string, risk : number) {
   priceJson: string;
   portfolioJson: string;
   public variableServiceFeePercentage: number;
+
+  public variableServiceFeeLevels: Array<{ lowerBand, upperBand, fee }>;
   public fixedMonthlyServiceFee: number;
   public oneTimeDeposit = 100;
   public recurringDeposit = 100;
@@ -283,15 +286,16 @@ marketFactor(market : string, risk : number) {
       console.log("  ",this.assetAllocationListForAllRisks);
     });
     
-    this.ConfigService.getJSON("./assets/tx_prices.json").toPromise().then(data => {
+    this.ConfigService.getJSON("./assets/pricesList.json").toPromise().then(data => {
       console.log("  Getting pricelist");
       this.priceJson = data;
       this.priceList = data[this.product].priceList;
       this.tax = data[this.product].tax;
       this.currencyCost = data[this.product].currency;
       this.discountLevels = data[this.product].discountLevels;
-      this.variableServiceFeePercentage = data[this.product].variableServiceFeePercentage;
-      this.fixedMonthlyServiceFee = data[this.product].fixedMonthlyServiceFee;
+      this.variableServiceFeePercentage = 0 //data[this.product].variableServiceFeePercentage;
+      this.variableServiceFeeLevels = data[this.product].variableServiceFeeLevels
+      this.fixedMonthlyServiceFee = 0 //'data[this.product].fixedMonthlyServiceFee;
       console.log("  ",this.priceList);
       //this.recalculate();
     });
@@ -403,7 +407,7 @@ marketFactor(market : string, risk : number) {
       iGoodMarketAssets = iNutralMarketAssets +iGoodMarketAssets * this.marketFactor('good', this.riskLevel);
 
 
-      iBadMarketVariableServiceFee = + this.variableServiceFee(iBadMarketAssets);
+      iBadMarketVariableServiceFee =  this.variableServiceFee(iBadMarketAssets);
       iNutralMarketVariableServiceFee = this.variableServiceFee(iNutralMarketAssets);
       iGoodMarketVariableServiceFee = this.variableServiceFee(iGoodMarketAssets);
 
@@ -554,8 +558,47 @@ marketFactor(market : string, risk : number) {
     }
     return ifixexServiceFee;
   }
+
+  partInlevel (l,u,x):number {  // l = lower limt   u = upper limt     x= assets
+    if (x>=u) { /// assets more than upper limit of this level
+      return u-l  // send the complet band with of this level
+    } else
+    if (x<l)  { // if assets smaller than the lowe limt , noth falls in this band
+      return 0
+    } else // assets mus ly somewhen between lower and upper liit of this level
+    {
+      return x-l
+
+    }
+
+
+  }
+
   variableServiceFee(totalAsset: number) {
-    return (totalAsset * this.variableServiceFeePercentage);
+    console.log("calculation Service Fee for ",totalAsset)
+    let ivariableServiceFeeLevels = this.variableServiceFeeLevels
+    let cumLevelServicesFee = 0
+    if (true) {
+      
+      for (let index = 0; index < ivariableServiceFeeLevels.length; index++) {
+        
+        let partInThisLevel = this.partInlevel(ivariableServiceFeeLevels[index].lowerBand,ivariableServiceFeeLevels[index].upperBand,totalAsset);
+        
+        console.log("   looping though services fee levels",index,"of",ivariableServiceFeeLevels.length)
+        console.log("   this level (",totalAsset,") lowwer (",ivariableServiceFeeLevels[index].lowerBand,") upper (",ivariableServiceFeeLevels[index].upperBand,")");
+        console.log("   this level fee",ivariableServiceFeeLevels[index].fee)
+        console.log("   part in this level",partInThisLevel);
+        let levelServicesFee = partInThisLevel * ivariableServiceFeeLevels[index].fee
+        console.log("   Services fee for this level ",levelServicesFee);
+        cumLevelServicesFee =  cumLevelServicesFee +  levelServicesFee;
+        console.log("   Cum. Services fee for this level ",cumLevelServicesFee);
+        
+      }
+    } else {
+      console.log("     no variableServiceFeeLevels defined")
+    }
+
+    return cumLevelServicesFee;
   }
 
   txDiscount(txCost) {
