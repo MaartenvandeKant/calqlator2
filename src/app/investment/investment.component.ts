@@ -3,6 +3,8 @@ import { ConfigService } from '../iot.service';
 import { Options } from 'ng5-slider';
 import { AngularWaitBarrier } from 'blocking-proxy/built/lib/angular_wait_barrier';
 
+// char.js ==> https://www.chartjs.org/docs/latest/axes/cartesian/linear.html
+// ng slide ==> https://angular-slider.github.io/ng5-slider/docs
 
 
 // to do comments
@@ -29,15 +31,23 @@ public barChartType:string = 'bar';
 public barChartLegend:boolean = true;
 public barChartOptions:any = {        
     responsive: true,
+    
     scales:{
         xAxes:[{
             stacked:true
         }],
         yAxes:[{
-            stacked:true
+            stacked:true,
+            ticks: {
+              suggestedMax: 500,
+              suggestedMin: 0,
+              
+          }
         }]
     }
   };
+
+ 
 // public barChartData:any[] = [[65, 59, 80, 81, 56, 55, 40],[65, 59, 80, 81, 56, 55, 40]];
 
 color1 : string = 'rgba(0, 95, 95, .99)';
@@ -147,7 +157,7 @@ marketFactor(market : string, risk : number) {
   };
 
   
-  
+  // probably can go
   public riskLevelArray: any [] = [
       
     { value: 2, legend: 'Defensief' },
@@ -220,7 +230,7 @@ marketFactor(market : string, risk : number) {
   public fixedMonthlyServiceFee: number;
   public oneTimeDeposit = 100;
   public recurringDeposit = 100;
-  public transactions = 10;
+  public transactions: number;
   public discountLevels = [];
   public tax: number;
   public currencyCost: number;
@@ -294,9 +304,17 @@ marketFactor(market : string, risk : number) {
       //console.log("  ",this.productOptions.riskLevels);
       //console.log("  ",this.riskLevelOptions.stepsArray);
       //console.log("  ",this.riskLevelOptions.stepsArray);
+      // get the risk level form the product optiens en set it to the slider
       this.riskLevelOptions.stepsArray = Object.assign([],this.productOptions.riskLevels)
-      const newOptions: Options = Object.assign({}, this.riskLevelOptions);
-      this.riskLevelOptions = newOptions;
+      const newRiskOptions: Options = Object.assign({}, this.riskLevelOptions);
+      this.riskLevelOptions = newRiskOptions;
+
+      // get the risk Maximum Transactions per year form the product optiens en set it to the slider
+      this.transactionOptions.ceil = this.productOptions.maxTransactions
+      this.transactions = this.productOptions.startTransactions;
+      const newTXOptions: Options = Object.assign({}, this.transactionOptions);
+      this.transactionOptions = newTXOptions;  
+
       this.recalculate();
 
     });
@@ -305,6 +323,23 @@ marketFactor(market : string, risk : number) {
    
   }
 
+
+  clean() {
+    this.barChartData = [
+      {data : [0,    0,      0], 
+        label: "Assets",
+        backgroundColor: 'window.chartColors.blue'},
+      {data : [0,0,0], 
+        label : "Costs",
+        backgroundColor: 'rgba(60, 60, 80, 0.1)'
+      }
+    ];
+
+
+    
+    return
+
+  }
 
   recalculate() {
     

@@ -11,7 +11,10 @@
           { "value": 2, "legend": "Mild" },
           { "value": 4, "legend": "Gemiddeld" },
           { "value": 6, "legend": "Pittig" }
-        ]
+        ],
+        "maxTransactions" : 20,
+        "startTransactions" : 5
+
       }
     ],
     "ZBP": [ 
@@ -25,7 +28,8 @@
         { "value": 2, "legend": "Mild" },
         { "value": 4, "legend": "Matig" },
         { "value": 6, "legend": "Pitig" }
-      ]
+      ],
+      "maxTransactions" : 25
       }
       
     ]
