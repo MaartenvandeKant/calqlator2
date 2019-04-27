@@ -1,4 +1,4 @@
-{   "ZBB" : {
+{   "ZBP" : {
   "priceList": [
     {
       "instrumentName": "Dutch Shares",
@@ -56,7 +56,7 @@
   "variableServiceFeePercentage": 0.01,
   "fixedMonthlyServiceFee" : 1
 },
-"ZBP" : {
+"ZBB" : {
   "priceList": [
     {
       "instrumentName": "Fund of Bonds",
@@ -91,7 +91,7 @@
       "costPercentage" : 0.0005
     },
     {
-      "instrumentName": "Stocks FC",
+      "instrumentName": "Stocks FX",
       "costType": "variable",
       "startingCost" :10,
       "minCost": 0,

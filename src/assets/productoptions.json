@@ -4,7 +4,7 @@
       {
         "screenName": "Zelf Beleggen Basis",
         "productOption1": "some thing",
-        "transactionCostPercentage" : 0
+        "transactionCostPercentage" : 0.2
       }
     ],
     "ZBP": [ 

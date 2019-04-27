@@ -2,10 +2,10 @@
   "portfolioDevision": {
     "ZBB": [
       {
-        "riskLevel": 2,
+        "riskLevel": 1,
         "assetAlocation": [
           {
-            "assetName": "Fund of bonds",
+            "assetName": "Fund of Bonds",
             "percentage": 0.75
           },
           {

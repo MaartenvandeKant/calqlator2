@@ -249,19 +249,25 @@ marketFactor(market : string, risk : number) {
   ngOnInit() {
 
 
-
-    console.log("start ngOnInit");
-    console.log(this.product);
+    console.log("==================================");
+    console.log("start ngOnInit for", this.product);
+    console.log("==================================");
 
     //this.productCode = this.product;
-    this.ConfigService.getJSON("./assets/riskWeigthedPortfolioDivision.json").subscribe(data => {
+    // this.ConfigService.getJSON("./assets/riskWeigthedPortfolioDivision.json").subscribe(data => {
+    
+   
+    this.ConfigService.getJSON("./assets/riskWeigthedPortfolioDivision.json").toPromise().then(data => {
+      console.log("  Getting riskbased assetAllocationList");
       this.assetAllocationListForAllRisks = data.portfolioDevision[this.product];
      //this.assetAllocationList = data.portfolioDevision[this.product];
       this.portfolioJson = data;
-      console.log("receiving riskbased assetAllocationList");
-      console.log(this.assetAllocationListForAllRisks);
+      
+      console.log("  ",this.assetAllocationListForAllRisks);
     });
-    this.ConfigService.getJSON("./assets/tx_prices.json").subscribe(data => {
+    
+    this.ConfigService.getJSON("./assets/tx_prices.json").toPromise().then(data => {
+      console.log("  Getting pricelist");
       this.priceJson = data;
       this.priceList = data[this.product].priceList;
       this.tax = data[this.product].tax;
@@ -269,28 +275,28 @@ marketFactor(market : string, risk : number) {
       this.discountLevels = data[this.product].discountLevels;
       this.variableServiceFeePercentage = data[this.product].variableServiceFeePercentage;
       this.fixedMonthlyServiceFee = data[this.product].fixedMonthlyServiceFee;
-      console.log("receiving pricelist");
-      console.log(this.priceList);
+      
+      console.log("  ",this.priceList);
       //this.recalculate();
     });
 
-    this.ConfigService.getJSON("./assets/productoptions.json").subscribe(data => {
-      console.log("receiving product Options");
-      console.log("===>=", data)
+    
+    this.ConfigService.getJSON("./assets/productoptions.json").toPromise().then(data => {
+      console.log("  Getting product Options");
       this.productOptions = data.productOptions[this.product][0];
-      console.log("product options for this product");
-      console.log(this.productOptions);
-      console.log(this.productOptions.transactionCostPercentage)
-      
+      console.log("  ",this.productOptions);
+      this.recalculate();
     });
 
 
-    this.recalculate();
+   
   }
 
 
   recalculate() {
     console.log(" ================ starting Cost calculation for", this.product)
+    console.log(" ==============================================", this.product)
+  
     this.portfolio = []
     let iPastAsset = 0;
     let iDeposit = 0;
@@ -547,6 +553,7 @@ marketFactor(market : string, risk : number) {
 
     console.log(" calulating transactions cost for product ",this.product)
     console.log(" finiding the applicable risk ralated assetallocations. Risk Level:",this.riskLevel)
+    
     let iFoundRiskRelatedAssetAlocations = false;
     for (let r = 0; r < this.assetAllocationListForAllRisks.length; r++) {
       // this is a nasty way to make sure that at least one portfolio match the risk
@@ -571,7 +578,8 @@ marketFactor(market : string, risk : number) {
     }
     
     console.log(" calulating transactions cost for ",this.product," and for  ",this.assetAllocationList.length, "Assets")
-      
+    console.log(" Asset llocation",this.assetAllocationList)
+   
     // def: instrument is a type of stock
     // def: asset is a stock that is part of a portfolio
     //
@@ -588,16 +596,23 @@ marketFactor(market : string, risk : number) {
       console.log( "   asset number",index + 1)
       const assetAllocation = this.assetAllocationList[index];
 
-      const instrumentPrices = this.priceList.filter(instrument => instrument.instrumentName == assetAllocation.assetName);
+      console.log("     Looking for the right price list in", this.priceList);
+      console.log("     identified by: ", assetAllocation.assetName);
+      
+      const instrumentPricesInfo = this.priceList.filter(instrument => instrument.instrumentName == assetAllocation.assetName);
+      
+      console.log("     instrument price Information array", instrumentPricesInfo)
+
+      
       // make sure a instrument type can have more than one cost by handling an array as a result from the filte
       console.log("     Name", assetAllocation.assetName);
       console.log("     share of portfolio:", assetAllocation.percentage);
       
 
-      //console.log(instrumentPrices);
-      if (instrumentPrices) {
-        //console.log("yes! instrumentPrices")
-        let instrumentPrice = instrumentPrices[0];
+      //console.log(instrumentPricesInfo);
+      if (instrumentPricesInfo.length > 0) {
+        //console.log("yes! instrumentPricesInfo")
+        let instrumentPrice = instrumentPricesInfo[0];
         
         
         switch (instrumentPrice.costType) {
@@ -680,6 +695,10 @@ marketFactor(market : string, risk : number) {
 
 
         }
+
+      } else
+      {
+        console.log ("instrument",assetAllocation.assetName, " in portfolio not found, skipping this intrument")
 
       }
 
