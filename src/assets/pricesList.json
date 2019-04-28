@@ -18,8 +18,8 @@
     }
 
   ],
-  "tax" : 0.001,
-  "currency" : 0.001,
+  "tax" : 0.21,
+  "taxPrecentage": 0.001,
   "discountLevels": [
     {
       "lowerBand": 0,
@@ -45,47 +45,64 @@
 "ZBB" : {
   "priceList": [
     {
+      "costType2": "transactionRelated",
       "instrumentName": "Fund of Bonds",
-      "costType": "variable",
-      "startingCost" :0,
+      "costName": "transactionCost",
+      "startingCost" :1,
       "minCost": 0,
-      "transactionCostPercentage" : 1,
-      "productCostPercentage": 1
+      "maxCost": 100,
+      "price" : 1
     },
     {
-      "instrumentName": "Fund of Stock",
-      "costType": "variable",
-      "startingCost" :0,
-      "minCost": 0,
-      "transactionCostPercentage" : 0.1,
-      "productCostPercentage": 0.1
-    },
-    {
+      "costType2": "transactionRelated",
       "instrumentName": "Fund of ETF",
-      "costType": "variable",
-      "startingCost" :0,
+      "costName": "transactionCost",
+      "startingCost" :1,
       "minCost": 0,
-      "maxCost": 100000,
-      "transactionCostPercentage" : 0.1,
-      "productCostPercentage": 0.1
+      "maxCost": 100,
+      "price" : 0.1
     },
     {
-      "instrumentName": "Stock",
-      "costType": "variable",
-      "startingCost" :5,
+      "costType2": "transactionRelated",
+      "instrumentName": "Stocks",
+      "costName": "transactionCost",
+      "startingCost" :1,
       "minCost": 0,
-      "maxCost": 100000,
-      "transactionCostPercentage" : 0.0005,
-      "productCostPercentage": 0.1
+      "maxCost": 100,
+      "price" : 0.1
     },
     {
-      "instrumentName": "Stocks FX",
-      "costType": "variable",
-      "startingCost" :10,
-      "minCost": 0,
-      "maxCost": 100000,
-      "transactionCostPercentage" : 0.0001,
-      "productCostPercentage": 0.1
+      "costType2": "transactionRelated",
+      "instrumentName": "Fund of Bonds",
+      "costName": "taxCost",
+      "price" : 0.5
+    },
+    {
+      "costType2": "Product Related",
+      "instrumentName": "Fund of Bonds",
+      "costName": "Running Cost",
+      "price" : 0.01
+    },
+    {
+      "costType2": "Service Related",
+      "costName": "Service Cost Band 1",
+      "lowerBand": 0,
+      "upperBand": 100,
+      "price" : 1
+    },
+    {
+      "costType2": "Service Related",
+      "costName": "Service Cost Band 2",
+      "lowerBand": 100,
+      "upperBand": 200,
+      "price" : 1
+    },
+    {
+      "costType2": "Service Related",
+      "costName": "Service Cost Band 3",
+      "lowerBand": 200,
+      "upperBand": 10000,
+      "price" : 1
     }
     
   ],

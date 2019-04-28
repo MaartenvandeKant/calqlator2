@@ -4,7 +4,7 @@
       {
         "screenName": "Zelf Beleggen Basis",
         "productOption1": "some thing",
-        "transactionCostPercentage" : 0.2,
+        "transactionCostPercentage" : 0.1,
         "riskLevels": [
       
           
@@ -13,7 +13,7 @@
           { "value": 6, "legend": "Pittig" }
         ],
         "maxTransactions" : 20,
-        "startTransactions" : 5
+        "startTransactions" : 4
 
       }
     ],

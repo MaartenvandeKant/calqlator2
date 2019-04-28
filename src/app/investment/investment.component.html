@@ -13,21 +13,21 @@
 
 
           <p align="center">Period: {{period}} year
-            <ng5-slider [(value)]="period" [options]="periodOptions" (userChangeStart)="clean()" (valueChange)="recalculate()"></ng5-slider>
+            <ng5-slider [(value)]="period" [options]="periodOptions" (userChangeStart)="clean()" (userChange)="recalculate()"></ng5-slider>
           </p>
 
           <p align="center"> {{transactions}} transactions per year
-            <ng5-slider [(value)]="transactions" [options]="transactionOptions" (userChangeStart)="clean()" (valueChange)="recalculate()"></ng5-slider>
+            <ng5-slider [(value)]="transactions" [options]="transactionOptions" (userChangeStart)="clean()" (userChange)="recalculate()"></ng5-slider>
           </p>
           <p align="center"> 
             {{oneTimeDeposit | currency:"EUR"  }} One Time Deposit
-            <ng5-slider [(value)]="oneTimeDeposit" [options]="oneTimeDepositOptions"  (userChangeStart)="clean()" (valueChange)="recalculate()"></ng5-slider>
+            <ng5-slider [(value)]="oneTimeDeposit" [options]="oneTimeDepositOptions"  (userChangeStart)="clean()" (userChange)="recalculate()"></ng5-slider>
           </p>
           <p align="center">Yearly recurring investment: {{recurringDeposit| currency:"EUR"}}
-            <ng5-slider [(value)]="recurringDeposit" [options]="recurringDepositOptions" (userChangeStart)="clean()" (valueChange)="recalculate()"></ng5-slider>
+            <ng5-slider [(value)]="recurringDeposit" [options]="recurringDepositOptions" (userChangeStart)="clean()" (userChange)="recalculate()"></ng5-slider>
           </p>
           <p align="center">Risk: {{riskLevel}}
-            <ng5-slider [(value)]="riskLevel" [options]="riskLevelOptions" (userChangeStart)="clean()" (valueChange)="recalculate()"></ng5-slider>
+            <ng5-slider [(value)]="riskLevel" [options]="riskLevelOptions" (userChangeStart)="clean()" (userChange)="recalculate()"></ng5-slider>
           </p>
           <p>.</p>
         </mat-card-content>
@@ -287,13 +287,26 @@
               <mat-panel-title>
                 Price Configuration Json
               </mat-panel-title>
-
+              
             </mat-expansion-panel-header>
             <mat-form-field class="example-full-width">
               <textarea rows="20" matInput placeholder="price" value="{{priceJson| json}}"></textarea>
             </mat-form-field>
 
           </mat-expansion-panel>
+
+
+       
+        <mat-expansion-panel (opened)="true" (closed)="false">
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              results
+            </mat-panel-title>
+            <pre>maarten</pre>
+          </mat-expansion-panel-header>
+         
+
+        </mat-expansion-panel>
         </mat-accordion>
 
       </mat-card-content>
@@ -304,7 +317,4 @@
 <p>-</p>
 
 
-
-
-
-
+<pre>{{overviewXML}}</pre>

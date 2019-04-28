@@ -19,12 +19,12 @@
           }
           ,
           {
-            "assetName": "Stock",
+            "assetName": "Stocks",
             "percentage": 0
           }
           ,
           {
-            "assetName": "Stock FX",
+            "assetName": "FX Stocks",
             "percentage": 0
           }
         ]
@@ -47,12 +47,12 @@
           }
           ,
           {
-            "assetName": "Stock",
+            "assetName": "Stocks",
             "percentage": 0.5
           }
           ,
           {
-            "assetName": "Stock FX",
+            "assetName": "FX Stocks",
             "percentage": 0.1
           }
         ]
@@ -81,12 +81,12 @@
           }
           ,
           {
-            "assetName": "Stock",
+            "assetName": "Stocks",
             "percentage": 0.4
           }
           ,
           {
-            "assetName": "Stock FX",
+            "assetName": "FX Stocks",
             "percentage": 0.1
           }
         ]
