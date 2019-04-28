@@ -87,6 +87,7 @@
     <th>Fix S. Fee</th>
 
     <th>Tx Cost</th>
+    <th>Prod Cost</th>
     <th>Tx Dis.</th>
     <th>Tax</th>
     <th>Cur Cost</th>
@@ -127,6 +128,7 @@
 
     <td>{{p.fixedServiceFee | currency:"EUR"}}</td>
     <td>{{p.txCost | currency:"EUR"}}</td>
+    <td>{{p.prodCost | currency:"EUR"}}</td>
     <td>{{p.txDiscount | currency:"EUR"}}</td>
     <td>{{p.tax | currency:"EUR"}}</td>
     <td>{{p.currencyCost | currency:"EUR"}}</td>
@@ -144,6 +146,104 @@
   </tr>
 
 </table>
+
+<table>
+  <th>year</th>
+  <th>Deposit</th>
+  <th>Cum Deposit</th>
+  <th> - </th>
+  <th>Total Assets</th>
+  <th> </th>
+  <th>Var S. Fee</th>
+  <th>Cum Var S. Fee</th>
+  <th>Fix S. Fee</th>
+  <th>Cum Fix S. Fee</th>
+
+  <th>Tx Cost</th>
+  <th>Prod Cost</th>
+  <th>Tx Dis.</th>
+  <th>Tax</th>
+  <th>Cur Cost</th>
+  <th> </th>
+  <th>Total Costs</th>
+  <th>Cum Total Costs</th>
+
+
+<tr *ngFor="let p of portfolio2">
+  <td>{{p.year}}
+
+  </td>
+  <td>{{p.deposit | currency:"EUR"}} <br>
+    {{p.deposit | currency:"EUR"}}<br>
+    {{p.deposit | currency:"EUR"}}</td>
+  <td>{{p.cumDeposit | currency:"EUR"}}<br>
+    {{p.cumDeposit | currency:"EUR"}}<br>
+    {{p.cumDeposit | currency:"EUR"}}</td>
+  <td></td>
+  <td>
+    {{p.badMarketAssets | currency:"EUR"}}<br>
+    {{p.nutralMarketAssets | currency:"EUR"}}<br>
+    {{p.goodMarketAssets | currency:"EUR"}}
+  </td>
+  <td> </td>
+
+  <td>
+    {{p.badMarketVariableServiceFee | currency:"EUR"}} <br>
+    {{p.nutralMarketVariableServiceFee | currency:"EUR"}} <br>
+    {{p.goodMarketVariableServiceFee | currency:"EUR"}} <br>
+  </td>
+  <td>
+    {{p.cumBadMarketVariableServiceFee | currency:"EUR"}} <br>
+    {{p.cumNutralMarketVariableServiceFee | currency:"EUR"}} <br>
+    {{p.cumGoodMarketVariableServiceFee | currency:"EUR"}} <br>
+  </td>
+
+
+  <td>
+    {{p.badFixexMarketServiceFee | currency:"EUR"}}<br>
+    {{p.nutralFixexMarketServiceFee | currency:"EUR"}}<br>
+    {{p.goodFixexMarketServiceFee | currency:"EUR"}}<br>
+  </td>
+
+  <td>
+    {{p.badFixexCumMarketServiceFee | currency:"EUR"}} <br>
+    {{p.nutralFixexCumMarketServiceFee | currency:"EUR"}} <br>
+    {{p.goodFixexCumMarketServiceFee | currency:"EUR"}}  <br>
+  </td>
+
+
+
+  <td>
+    {{p.txBadMarketCost | currency:"EUR"}}<br>
+    {{p.txNutralMarketCost | currency:"EUR"}}<br>
+    {{p.txGoodMarketCost | currency:"EUR"}}
+  </td>
+  <td>
+    {{p.badMarketProdCost | currency:"EUR"}}<br>
+    {{p.nutralMarketProdCost | currency:"EUR"}}<br>
+    {{p.goodMarketProdCost | currency:"EUR"}}<br>
+  </td>
+
+
+
+  <td>{{p.txDiscount | currency:"EUR"}}</td>
+  <td>{{p.tax | currency:"EUR"}}</td>
+  <td>{{p.currencyCost | currency:"EUR"}}</td>
+  <td></td>
+  <td>
+    {{p.totalBadMarketCost| currency:"EUR"}}<br>
+    {{p.totalNutralMarketCost| currency:"EUR"}}<br>
+    {{p.totalGoodMarketCost| currency:"EUR"}}
+  </td>
+  <td>
+    {{p.cumTotalBadMarketCost| currency:"EUR"}}<br>
+    {{p.cumTotalNutralMarketCost| currency:"EUR"}}<br>
+    {{p.cumTotalGoodMarketCost| currency:"EUR" }} 
+  </td>
+</tr>
+
+</table>
+
 
 </mat-card-content>
 </mat-card>

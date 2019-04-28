@@ -6,7 +6,7 @@
         "assetAlocation": [
           {
             "assetName": "Fund of Bonds",
-            "percentage": 0.75
+            "percentage": 1
           },
           {
             "assetName": "Fund of Stock",
@@ -34,26 +34,26 @@
         "assetAlocation": [
           {
             "assetName": "Fund of Bonds",
-            "percentage": 0.75
+            "percentage": 0.4
           },
           {
             "assetName": "Fund of Stock",
-            "percentage": 0.125
+            "percentage": 0
           }
           ,
           {
             "assetName": "Fund of ETF",
-            "percentage": 0.125
+            "percentage": 0
           }
           ,
           {
             "assetName": "Stock",
-            "percentage": 0
+            "percentage": 0.5
           }
           ,
           {
             "assetName": "Stock FX",
-            "percentage": 0
+            "percentage": 0.1
           }
         ]
         
@@ -68,26 +68,26 @@
         "assetAlocation": [
           {
             "assetName": "Fund of Bonds",
-            "percentage": 0.75
+            "percentage": 0
           },
           {
             "assetName": "Fund of Stock",
-            "percentage": 0.125
+            "percentage": 0.25
           }
           ,
           {
             "assetName": "Fund of ETF",
-            "percentage": 0.125
+            "percentage": 0.25
           }
           ,
           {
             "assetName": "Stock",
-            "percentage": 0
+            "percentage": 0.4
           }
           ,
           {
             "assetName": "Stock FX",
-            "percentage": 0
+            "percentage": 0.1
           }
         ]
       }

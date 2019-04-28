@@ -3,6 +3,7 @@ import { ConfigService } from '../iot.service';
 import { Options } from 'ng5-slider';
 import { AngularWaitBarrier } from 'blocking-proxy/built/lib/angular_wait_barrier';
 import { MatCheckbox } from '@angular/material';
+import { forEach } from '@angular/router/src/utils/collection';
 
 // char.js ==> https://www.chartjs.org/docs/latest/axes/cartesian/linear.html
 // ng slide ==> https://angular-slider.github.io/ng5-slider/docs
@@ -95,7 +96,7 @@ marketFactor(market : string, risk : number) {
       risk 2    -5   + 1,5           1          0     1,5
       risk 3    -1,5 +    
     */
-    //console.log (market);
+    console.log("    calculatoin market factor for",market);
     let marketFactor = 0;
     if (market == 'nutral') {
       marketFactor = 0.01 + (risk*0.01) 
@@ -224,10 +225,10 @@ marketFactor(market : string, risk : number) {
 
 
   public period: number = 2;
-  public riskLevel: number = 1;
+  public riskLevel: number = 2;
   priceJson: string;
   portfolioJson: string;
-  public variableServiceFeePercentage: number;
+  //public variableServiceFeePercentage: number;
 
   public variableServiceFeeLevels: Array<{ lowerBand, upperBand, fee }>;
   public fixedMonthlyServiceFee: number;
@@ -240,8 +241,9 @@ marketFactor(market : string, risk : number) {
 
   assetAllocationList = [];
   assetAllocationListForAllRisks =[];
-  startyear: number = 2018
+  startyear: number = 2019
   public portfolio: any;
+  public portfolio2: any;
   priceList: any;
 
   public cumTotalDeposit: number;
@@ -293,9 +295,9 @@ marketFactor(market : string, risk : number) {
       this.tax = data[this.product].tax;
       this.currencyCost = data[this.product].currency;
       this.discountLevels = data[this.product].discountLevels;
-      this.variableServiceFeePercentage = 0 //data[this.product].variableServiceFeePercentage;
+      //this.variableServiceFeePercentage = 0 //data[this.product].variableServiceFeePercentage;
       this.variableServiceFeeLevels = data[this.product].variableServiceFeeLevels
-      this.fixedMonthlyServiceFee = 0 //'data[this.product].fixedMonthlyServiceFee;
+      this.fixedMonthlyServiceFee = data[this.product].fixedMonthlyServiceFee;
       console.log("  ",this.priceList);
       //this.recalculate();
     });
@@ -351,6 +353,7 @@ marketFactor(market : string, risk : number) {
     console.log(" ==============================================", this.product)
   
     this.portfolio = []
+    this.portfolio2 =[]
     let iPastAsset = 0;
     let iDeposit = 0;
     let iPastDeposit = 0;
@@ -385,11 +388,66 @@ marketFactor(market : string, risk : number) {
     let iTotalTax = 0;
 
     let iCumTotalTax = 0;
+    let iMarketAsset = []
+    let iCumMarketAsset = []
+    let iCumMarketTxCost = []
+    let iCumMarketProdCost = []
+    let y2 = []
+
+    let iMarketVariableServiceFee = []
+    let iCumMarketVariableServiceFee = []
+    let iTotalMarketInstrumentCost = []
+    let iMarketTxCost = []
+    let iMarketProdCost = []
+    let iFixexMarketServiceFee = [] 
+    let iFixexCumMarketServiceFee = []
+
+    let iGrandTotalCost = []
+    let iGrandTotalCumCost = []
+
+    let iMarketTypes = ['bad','nutral','good']
+    for (var i in  iMarketTypes) {
+        let market = iMarketTypes[i]
+
+        // initialize
+        iCumMarketAsset[market] = 0
+        iFixexCumMarketServiceFee[market] = 0
+        iCumMarketTxCost[market] = 0
+        iCumMarketProdCost[market] = 0
+        iMarketAsset[market] = 0
+        //iMarketVariableServiceFee[market] = 0
+        iCumMarketVariableServiceFee[market]  = 0
+        //iTotalMarketInstrumentCost[market] = 0
+        //iMarketTxCost[market] = 0
+        //iMarketProdCost[market] = 0
+        //console.log(" market asset for",market,":",iCumMarketAsset[market]);
+        iFixexCumMarketServiceFee[market] = 0
+        
+        iGrandTotalCumCost[market] = 0
+
+        
+    }
 
 
 
     let today = new Date();
     for (let index = 0; index < this.period; index++) {
+      for (var i in  iMarketTypes) {
+        let market = iMarketTypes[i]
+
+        // initialize
+        //iCumMarketAsset[market] = 0
+        //iMarketAsset[market] = 0
+        iMarketVariableServiceFee[market] = 0
+        //iCumMarketVariableServiceFee[market]  = 0
+        iTotalMarketInstrumentCost[market] = 0
+        iMarketTxCost[market] = 0
+        iMarketProdCost[market] = 0
+        iFixexMarketServiceFee[market] = 0
+        iGrandTotalCost[market] = 0
+       
+        
+    }
       console.log("calculation for year", index)
       let iyear = this.year(index);
       console.log("calculation for year", iyear)
@@ -401,11 +459,60 @@ marketFactor(market : string, risk : number) {
       iNutralMarketAssets += iDeposit;
       iGoodMarketAssets += iDeposit;
 
+      
+      //console.log("    market information ", iMarketAsset)
+      for (var i in  iMarketTypes) {
+        let market = iMarketTypes[i]
+  
+          iMarketAsset[market] += iDeposit
+          //console.log("    market information ",iMarketAsset[key])
+          iMarketAsset[market] = iMarketAsset[market] + iMarketAsset[market] * this.marketFactor(market,this.riskLevel);
+          iCumMarketAsset[market] += iMarketAsset[market]
+
+          iMarketVariableServiceFee[market] = this.variableServiceFee(iMarketAsset[market]);
+          iCumMarketVariableServiceFee[market] += iMarketVariableServiceFee[market]
+
+          // to do clculate iTotalMarketInstrumentCost of the total value in stead of deposit 
+          // iTotalMarketInstrumentCost[market] = this.instrumentCost(iCumDeposit)
+          iTotalMarketInstrumentCost[market] = this.instrumentCost(iCumDeposit)
+          iMarketTxCost[market] = iTotalMarketInstrumentCost[market][0]
+          iMarketProdCost[market] = iTotalMarketInstrumentCost[market][1]
+
+          iCumMarketTxCost[market] += iMarketTxCost[market]
+          iCumMarketProdCost[market] = iMarketProdCost[market]
+
+          iFixexMarketServiceFee[market] = this.fixexServiceFee(today, iyear);
+          iFixexCumMarketServiceFee[market] += iFixexMarketServiceFee[market]
+
+
+          iGrandTotalCost[market] =  iMarketTxCost[market] + 
+                                      iMarketProdCost[market] + 
+                                      iMarketVariableServiceFee[market] + 
+                                      iFixexCumMarketServiceFee[market]
+
+          
+          iGrandTotalCumCost[market] += iGrandTotalCost[market]
+
+          //console.log("    market information ",iMarketAsset[key])
+          //console.log("    market asset for",key,":",iMarketAsset[key]);
+      }
+
+      console.log("    new market assets",iMarketAsset);
+      console.log("    new Cummarket assets",iCumMarketAsset);
+      console.log("    new iMarketVariableServiceFee",iMarketVariableServiceFee);
+      console.log("    new iCumMarketVariableServiceFee",iCumMarketVariableServiceFee);
+      console.log("    new iTotalMarketInstrumentCost",iTotalMarketInstrumentCost);
+
+      console.log("    new iMarketTxCost",iMarketTxCost);
+      console.log("    new iMarketProdCost",iMarketProdCost);
+     
 
       iBadMarketAssets = iBadMarketAssets + iBadMarketAssets * this.marketFactor('bad',this.riskLevel);
+      console.log("    old market bad information ",iBadMarketAssets)
       iNutralMarketAssets = iNutralMarketAssets + iNutralMarketAssets * this.marketFactor('nutral', this.riskLevel);
-      iGoodMarketAssets = iNutralMarketAssets +iGoodMarketAssets * this.marketFactor('good', this.riskLevel);
-
+      console.log("    old market nutral information ",iNutralMarketAssets)
+      iGoodMarketAssets = iGoodMarketAssets +iGoodMarketAssets * this.marketFactor('good', this.riskLevel);
+      console.log("    old market good information ",iGoodMarketAssets)
 
       iBadMarketVariableServiceFee =  this.variableServiceFee(iBadMarketAssets);
       iNutralMarketVariableServiceFee = this.variableServiceFee(iNutralMarketAssets);
@@ -418,9 +525,13 @@ marketFactor(market : string, risk : number) {
 
       console.log("calculation Fixed Services Fees");
       let iFixexServiceFee = this.fixexServiceFee(today, iyear);
+      console.log("calculation Fixed Services Fees",iFixexServiceFee);
 
-      console.log("calculation transcations costs")
-      let iTxCost = this.txCost(iCumDeposit);
+      console.log("calculation  Transaction and Product Costs")
+      let iTotalInstrumentCost = this.instrumentCost(iCumDeposit);
+      console.log("calculation  costs", iTotalInstrumentCost)
+      let iTxCost = iTotalInstrumentCost[0]
+      let iProdCost = iTotalInstrumentCost[1]
       let iTxDiscount = this.txDiscount(iTxCost);
       let iTax = this.tax * iDeposit;
       let iCurrencyCost = this.currencyCost * iDeposit;
@@ -465,11 +576,69 @@ marketFactor(market : string, risk : number) {
 
 
         "txCost": iTxCost,
+        "prodCost": iProdCost,
         "tax": iTax,
         "currencyCost": iCurrencyCost,
         "txDiscount": iTxDiscount
 
       });
+
+
+      console.log( " setting the portfolio",iCumMarketAsset[iMarketTypes[0]])
+     
+      this.portfolio2.push({
+        "year": iyear,
+        "deposit": iDeposit,
+        "cumDeposit": iCumDeposit,
+
+        "badMarketAssets": iMarketAsset['bad'],
+        "nutralMarketAssets": iMarketAsset['nutral'],
+        "goodMarketAssets": iMarketAsset['good'],
+
+        "fixedServiceFee": iFixexServiceFee,
+        "badFixexMarketServiceFee": iFixexMarketServiceFee['bad'],
+        "nutralFixexMarketServiceFee":iFixexMarketServiceFee['nutral'],
+        "goodFixexMarketServiceFee":iFixexMarketServiceFee['good'],
+
+        "badFixexCumMarketServiceFee": iFixexCumMarketServiceFee['bad'],
+        "nutralFixexCumMarketServiceFee":iFixexCumMarketServiceFee['nutral'],
+        "goodFixexCumMarketServiceFee":iFixexCumMarketServiceFee['good'],
+
+        "badMarketVariableServiceFee": iMarketVariableServiceFee['bad'],
+        "nutralMarketVariableServiceFee": iMarketVariableServiceFee['nutral'],
+        "goodMarketVariableServiceFee": iMarketVariableServiceFee['good'],
+
+        "cumBadMarketVariableServiceFee": iCumMarketVariableServiceFee['bad'],
+        "cumNutralMarketVariableServiceFee": iCumMarketVariableServiceFee['nutral'],
+        "cumGoodMarketVariableServiceFee": iCumMarketVariableServiceFee['good'],
+
+        "totalBadMarketCost": iGrandTotalCost['bad'],
+        "totalNutralMarketCost": iGrandTotalCost['nutral'],
+        "totalGoodMarketCost": iGrandTotalCost['good'],
+
+        "cumTotalBadMarketCost": iGrandTotalCumCost['bad'],
+        "cumTotalNutralMarketCost": iGrandTotalCumCost['nutral'],
+        "cumTotalGoodMarketCost": iGrandTotalCumCost['good'],
+
+
+        
+        "txBadMarketCost": iMarketTxCost['bad'],
+        "txNutralMarketCost": iMarketTxCost['nutral'],
+        "txGoodMarketCost": iMarketTxCost['good'],
+
+        
+        "badMarketProdCost": iMarketProdCost['bad'],
+        "nutralMarketProdCost": iMarketProdCost['nutral'],
+        "goodMarketProdCost": iMarketProdCost['good'],
+
+        "tax": iTax,
+        "currencyCost": iCurrencyCost,
+        "txDiscount": iTxDiscount
+
+      });
+
+
+
       iPastDeposit = iCumDeposit;
       this.cumTotalDeposit = iCumDeposit;
 
@@ -548,10 +717,11 @@ marketFactor(market : string, risk : number) {
   }
 
   fixexServiceFee(d: Date, year) {
-    //console.log(d.getFullYear());
+    console.log("   fixexServiceFee ",d.getFullYear());
+    console.log("   fixexServiceFee ",this.fixedMonthlyServiceFee);
     let ifixexServiceFee = 0;
 
-    if (d.getFullYear() == year) {
+    if (d.getFullYear() == year) {            
       ifixexServiceFee = (12 - d.getMonth()) * this.fixedMonthlyServiceFee;
     } else {
       ifixexServiceFee = 12 * this.fixedMonthlyServiceFee;
@@ -630,9 +800,45 @@ marketFactor(market : string, risk : number) {
     return iTxDiscount;
   }
 
-  txCost(totalAsset: number) {
+  getAssetAllocation ():any[] {
+    console.log(" finiding the applicable risk ralated assetallocations. Risk Level:",this.riskLevel)
+    
+    let anAssetAllocationList = []
+    let iFoundRiskRelatedAssetAlocations = false;
+    for (let r = 0; r < this.assetAllocationListForAllRisks.length; r++) {
+      // this is a nasty way to make sure that at least one portfolio match the risk
+      // if  it's the right one we stop the for loop
+      anAssetAllocationList = this.assetAllocationListForAllRisks[r].assetAlocation;
+      if (this.assetAllocationListForAllRisks[r].riskLevel == this.riskLevel)
+      {
+        console.log(" FoundRiskRelatedAssetAlocations found!!!",this.assetAllocationList);
+        
+        //console.log(this.assetAllocationList);
+        iFoundRiskRelatedAssetAlocations = true;
+        return anAssetAllocationList
+      }
+      
+      //console.log("asset allocation list =======");
+      //console.log(this.riskLevel);
+      //console.log(this.assetAllocationList);
+    }
+    if (!iFoundRiskRelatedAssetAlocations) {
+      console.log(" No risk related asses allocations found !!!");
+      console.log(" using default");
+      return anAssetAllocationList;
+    }
+
+    console.log(" No asset allocation list at all, we better stop.");
+
+  }
+
+  
+
+
+  instrumentCost(totalAsset: number) {
     //console.log("start txCost")
     let icost = 0;
+    let iPCost = 0;
     let itax = 0;
     let iDiscount = 0;
     //console.log(this.assetAllocationList);
@@ -644,31 +850,11 @@ marketFactor(market : string, risk : number) {
 
 
     console.log(" calulating transactions cost for product ",this.product)
-    console.log(" finiding the applicable risk ralated assetallocations. Risk Level:",this.riskLevel)
-    
-    let iFoundRiskRelatedAssetAlocations = false;
-    for (let r = 0; r < this.assetAllocationListForAllRisks.length; r++) {
-      // this is a nasty way to make sure that at least one portfolio match the risk
-      // if  it's the right one we stop the for loop
-      this.assetAllocationList = this.assetAllocationListForAllRisks[r].assetAlocation;
-      if (this.assetAllocationListForAllRisks[r].riskLevel == this.riskLevel)
-      {
-        console.log(" FoundRiskRelatedAssetAlocations found!!!");
-        //console.log(this.assetAllocationListForAllRisks[r].riskLevel)
-        //console.log(this.assetAllocationList);
-        iFoundRiskRelatedAssetAlocations = true;
-        break;
-      }
-      
-      //console.log("asset allocation list =======");
-      //console.log(this.riskLevel);
-      //console.log(this.assetAllocationList);
-    }
-    if (!iFoundRiskRelatedAssetAlocations) {
-      console.log(" No risk related asses allocations found !!!");
-      console.log(" using default");
-    }
-    
+  
+  
+    this.assetAllocationList = this.getAssetAllocation()
+  
+
     console.log(" calulating transactions cost for ",this.product," and for  ",this.assetAllocationList.length, "Assets")
     console.log(" Asset llocation",this.assetAllocationList)
    
@@ -699,30 +885,21 @@ marketFactor(market : string, risk : number) {
       // make sure a instrument type can have more than one cost by handling an array as a result from the filte
       console.log("     Name", assetAllocation.assetName);
       console.log("     share of portfolio:", assetAllocation.percentage);
+      console.log("     Instrument price infor:", instrumentPricesInfo);
       
 
-      //console.log(instrumentPricesInfo);
+      
       if (instrumentPricesInfo.length > 0) {
-        //console.log("yes! instrumentPricesInfo")
+        console.log("yes! instrumentPricesInfo lenght > 0")
         let instrumentPrice = instrumentPricesInfo[0];
+        console.log("     Instrument price infor:", instrumentPrice);
         
         
-        switch (instrumentPrice.costType) {
-          case "fixed":
-            console.log("     Cost type is Fixed");
-            console.log("     Price", instrumentPrice.cost);
-            
-            console.log("     ",instrumentPrice.cost + " * " + assetAllocation.percentage + " * " +  this.transactions);
-            // only price transactions if assest <> 0
-            if (totalAsset > 0)
-              icost += instrumentPrice.cost * assetAllocation.percentage * this.transactions;
-            else
-              icost += 0;
-            break;
+        if (instrumentPrice.transactionCostPercentage > 0) {
 
-          case "variable":
-             console.log("     Cost type is Variable");
-             console.log("     Cost is ", instrumentPrice.costPercentage," of single order amount ");
+         
+             console.log("     Transaction Cost apply for this intrument");
+             console.log("     Cost is ", instrumentPrice.transactionCostPercentage," of single order amount ");
             //console.log("variable cost <===");
             //console.log(this.transactions);
 
@@ -745,8 +922,8 @@ marketFactor(market : string, risk : number) {
             console.log ("       Order amount ====>", iSingleTransactionAmount)
 
             console.log ("     Price")
-            console.log ("        Variable price is ", instrumentPrice.costPercentage," of each order amount (",iSingleTransactionAmount,")");
-            let iVariableOrderCost = instrumentPrice.costPercentage * iSingleTransactionAmount
+            console.log ("        Variable price is ", instrumentPrice.transactionCostPercentage," of each order amount (",iSingleTransactionAmount,")");
+            let iVariableOrderCost = instrumentPrice.transactionCostPercentage * iSingleTransactionAmount
             console.log ("        Variable price is ", iVariableOrderCost);
 
             let iStartingCost = 0;
@@ -761,14 +938,20 @@ marketFactor(market : string, risk : number) {
 
 
             console.log ("        Instrument Minimum Price is ",instrumentPrice.minCost)
-            console.log ("        Instrument Maximum Price is ",instrumentPrice.maxCost)
+            console.log ("        Instrument Maximum Price is ",instrumentPrice.maxCost,typeof instrumentPrice.maxCost)
 
 
             let iFinalSingleOrderCost = iSingleOrderCost
             
-            iFinalSingleOrderCost = Math.max(iFinalSingleOrderCost, instrumentPrice.minCost)
-            iFinalSingleOrderCost = Math.min(iFinalSingleOrderCost, instrumentPrice.maxCost)
+            if (typeof instrumentPrice.minCost !== 'undefined'){  
+              iFinalSingleOrderCost = Math.max(iFinalSingleOrderCost, instrumentPrice.minCost)
             
+            }  
+
+
+            if (typeof instrumentPrice.maxCost !== 'undefined'){   
+              iFinalSingleOrderCost = Math.min(iFinalSingleOrderCost, instrumentPrice.maxCost)
+            }
 
             console.log ("        Final single order price is (including min,max) ", iFinalSingleOrderCost)
             
@@ -783,20 +966,26 @@ marketFactor(market : string, risk : number) {
             console.log ("      ====> Total Order cost cost of ",index + 1," out of ",this.assetAllocationList.length," instuments  ===> ", icost)
             //console.log(icost);
             console.log ("      =================================");
-            break;
+            
 
 
         }
+        if (instrumentPrice.productCostPercentage > 0) {
+          console.log("     Running Product Cost of (",instrumentPrice.productCostPercentage,") apply for this intrument");
+          console.log("     Asset allocation is (",assetAllocation.percentage,")");
+          console.log("     Assetis till now (",totalAsset,") apply for this intrument");
+          iPCost = instrumentPrice.productCostPercentage * totalAsset * assetAllocation.percentage
+          console.log("     Product Cost for this year  (",iPCost,") ");
+        }
+        break;
 
-      } else
-      {
-        console.log ("instrument",assetAllocation.assetName, " in portfolio not found, skipping this intrument")
-
-      }
+      } 
+      
 
 
     }
-    return icost;
+    console.log("    returning cost ",[icost,iPCost])
+    return [icost,iPCost];
   }
 
 

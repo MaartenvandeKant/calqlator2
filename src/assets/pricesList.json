@@ -5,32 +5,18 @@
       "costType": "variable",
       "minCost": 10,
       "maxCost": 10,
-      "costPercentage" : "0.2"
-    },
-    {
-      "instrumentName": "English Shares",
-      "costType": "fixed",
-      "cost": 8
+      "txCostPercentage" : "0.2",
+      "runningProductCostPercentage": 0.1
     },
     {
       "instrumentName": "Irish Shares",
       "costType": "variable",
       "minCost": 10,
       "maxCost": 100,
-      "costPercentage" : "0.01"
-    },
-    {
-      "instrumentName": "ETF",
-      "costType": "fixed",
-      "cost": 1
-    },
-    {
-      "instrumentName": "Fund",
-      "costType": "fixed",
-      "cost": 10
+      "costPercentage" : "0.01",
+      "productCost": 0.1
     }
 
-    
   ],
   "tax" : 0.001,
   "currency" : 0.001,
@@ -53,7 +39,7 @@
     
     
   ],
-  "variableServiceFeePercentage": 0.01,
+  
   "fixedMonthlyServiceFee" : 1
 },
 "ZBB" : {
@@ -63,24 +49,25 @@
       "costType": "variable",
       "startingCost" :0,
       "minCost": 0,
-      "maxCost": 0,
-      "costPercentage" : 0.00000
+      "transactionCostPercentage" : 1,
+      "productCostPercentage": 1
     },
     {
       "instrumentName": "Fund of Stock",
       "costType": "variable",
       "startingCost" :0,
       "minCost": 0,
-      "maxCost": 0,
-      "costPercentage" : 0.00000
+      "transactionCostPercentage" : 0.1,
+      "productCostPercentage": 0.1
     },
     {
       "instrumentName": "Fund of ETF",
       "costType": "variable",
       "startingCost" :0,
       "minCost": 0,
-      "maxCost": 0,
-      "costPercentage" : 0.00000
+      "maxCost": 100000,
+      "transactionCostPercentage" : 0.1,
+      "productCostPercentage": 0.1
     },
     {
       "instrumentName": "Stock",
@@ -88,7 +75,8 @@
       "startingCost" :5,
       "minCost": 0,
       "maxCost": 100000,
-      "costPercentage" : 0.0005
+      "transactionCostPercentage" : 0.0005,
+      "productCostPercentage": 0.1
     },
     {
       "instrumentName": "Stocks FX",
@@ -96,7 +84,8 @@
       "startingCost" :10,
       "minCost": 0,
       "maxCost": 100000,
-      "costPercentage" : 0.001
+      "transactionCostPercentage" : 0.0001,
+      "productCostPercentage": 0.1
     }
     
   ],
@@ -140,8 +129,8 @@
     
     
   ],
-  "variableServiceFeePercentage": 0.01,
-  "fixedMonthlyServiceFee" : 0
+
+  "fixedMonthlyServiceFee" : 1
 }
 
 
