@@ -10,22 +10,22 @@
           },
           {
             "assetName": "Fund of Stock",
-            "percentage": 0.125
+            "percentage": 1
           }
           ,
           {
             "assetName": "Fund of ETF",
-            "percentage": 0.125
+            "percentage": 1
           }
           ,
           {
             "assetName": "Stocks",
-            "percentage": 0
+            "percentage": 1
           }
           ,
           {
             "assetName": "FX Stocks",
-            "percentage": 0
+            "percentage": 1
           }
         ]
       },

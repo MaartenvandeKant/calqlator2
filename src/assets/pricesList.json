@@ -50,7 +50,7 @@
       "costName": "transactionCost",
       "startingCost" :1,
       "minCost": 0,
-      "maxCost": 100,
+      "maxCost": 10,
       "price" : 1
     },
     {
@@ -59,8 +59,8 @@
       "costName": "transactionCost",
       "startingCost" :1,
       "minCost": 0,
-      "maxCost": 100,
-      "price" : 0.1
+      "maxCost": 10,
+      "price" : 1
     },
     {
       "costType2": "transactionRelated",
@@ -68,41 +68,42 @@
       "costName": "transactionCost",
       "startingCost" :1,
       "minCost": 0,
-      "maxCost": 100,
-      "price" : 0.1
+      "maxCost": 10,
+      "price" : 1
     },
     {
       "costType2": "transactionRelated",
       "instrumentName": "Fund of Bonds",
       "costName": "taxCost",
-      "price" : 0.5
+      "price" : 0.05
     },
     {
       "costType2": "Product Related",
       "instrumentName": "Fund of Bonds",
       "costName": "Running Cost",
-      "price" : 0.01
+      "maxCost": 10,
+      "price" : 1
     },
     {
       "costType2": "Service Related",
       "costName": "Service Cost Band 1",
       "lowerBand": 0,
       "upperBand": 100,
-      "price" : 1
+      "price" : 0.0001
     },
     {
       "costType2": "Service Related",
       "costName": "Service Cost Band 2",
       "lowerBand": 100,
       "upperBand": 200,
-      "price" : 1
+      "price" : 0.0001
     },
     {
       "costType2": "Service Related",
       "costName": "Service Cost Band 3",
       "lowerBand": 200,
-      "upperBand": 10000,
-      "price" : 1
+      "upperBand": 100000000,
+      "price" : 0.00001
     }
     
   ],

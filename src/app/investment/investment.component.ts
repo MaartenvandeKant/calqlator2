@@ -34,6 +34,8 @@ export interface PeriodicElement {
   providers: [ConfigService],
 
   styleUrls: ['./investment.component.css']
+  
+
 })
 
 
@@ -132,17 +134,17 @@ marketFactor(market : string, risk : number) {
   value: number = 100;
   //productCode = "ZBB";
   oneTimeDepositStepRange: number[] = this.createStepRange([
-    { rangeLow: 0, rangeHigh: 250, rangeStep: 10 },
-    { rangeLow: 250, rangeHigh: 1000, rangeStep: 50 },
-    { rangeLow: 1000, rangeHigh: 5000, rangeStep: 200 },
-    { rangeLow: 5000, rangeHigh: 10000, rangeStep: 1000 },
-    { rangeLow: 10000, rangeHigh: 100000, rangeStep: 10000 },
+    { rangeLow: 0,      rangeHigh: 100,     rangeStep: 10 },
+    { rangeLow: 100,    rangeHigh: 1000,    rangeStep: 100 },
+    { rangeLow: 1000,   rangeHigh: 10000,   rangeStep: 1000 },
+    { rangeLow: 10000,  rangeHigh: 100000,  rangeStep: 10000 },
+    { rangeLow: 100000, rangeHigh: 1000000, rangeStep: 100000 },
 
   ]);
   recurringDepositStepRange: number[] = this.createStepRange([
-    { rangeLow: 0, rangeHigh: 250, rangeStep: 10 },
-    { rangeLow: 250, rangeHigh: 1000, rangeStep: 50 },
-    { rangeLow: 1000, rangeHigh: 5000, rangeStep: 200 }
+    { rangeLow: 0,      rangeHigh: 100,        rangeStep: 10 },
+    { rangeLow: 100,     rangeHigh: 1000,      rangeStep: 100 },
+    { rangeLow: 100,    rangeHigh: 10000,      rangeStep: 1000 }
   ]);
 
   
@@ -251,7 +253,7 @@ marketFactor(market : string, risk : number) {
 
   public variableServiceFeeLevels: Array<{ lowerBand, upperBand, fee }>;
   public fixedMonthlyServiceFee: number;
-  public oneTimeDeposit = 100;
+  public oneTimeDeposit = 1000;
   public recurringDeposit = 100;
   public transactions: number;
   public discountLevels = [];
@@ -259,17 +261,18 @@ marketFactor(market : string, risk : number) {
   public currencyCost: number;
   public currencyPercentage: number;
   overviewXML : string;
+  overviewArray : any;
 
   assetAllocationList = [];
   assetAllocationListForAllRisks =[];
   startyear: number = 2019
   public portfolio: any;
   public portfolio2: any;
-  priceList: any;
+  priceList: any; 
   
   public allCosts:  any;
 
-  public cumTotalDeposit: number;
+  //public cumTotalDeposit: number;
   public cumTotalNutralMarketAssets: number;
   public cumTotalBadMarketAssets: number;
   public cumTotalGoodMarketAssets: number;
@@ -285,8 +288,6 @@ marketFactor(market : string, risk : number) {
 
   constructor(private ConfigService: ConfigService) {
     console.log("start constructor");
-
-
 
   }
 
@@ -351,7 +352,7 @@ marketFactor(market : string, risk : number) {
       
 
       this.recalculate();
-
+      
 
 
     });
@@ -394,24 +395,44 @@ marketFactor(market : string, risk : number) {
     this.xw.endElement()
   }
 
-  recalculate() {
+  record(m,key,v,overwrite=false){  // m= map
     
+    let current_value = m.get(key)
+    //console.error("befor ",key, " is", current_value, "and new is",v)
+    if ((typeof current_value !== 'undefined') && !overwrite){
+      v += current_value
+     
+    }
+    //console.error("after ",key, " is", v)
+    m.set(key,v)
+   
+  }
+
+  recalculate() {
+    this.overviewArray = []
+
+
+    
+    
+
     console.log(" ================ starting Cost calculation for", this.product)
     console.log(" ==============================================")
     console.log(" init is done", this.initDone )
 
     
     
-    
-   
-    
-    
- 
-    
 
     this.xw = new this.XMLWriter;
     this.xw.startDocument();
     this.addElementToXML('root')
+    this.addElementToXML('input')
+    this.addElementToXML('Riks',{"level":this.riskLevel},true)
+    this.addElementToXML('One_time_deposit',{"amount":this.oneTimeDeposit},true)
+    this.addElementToXML('Recurring_deposit',{"amount":this.recurringDeposit},true)
+    this.addElementToXML('Numer_of_transactions',{"amount":this.transactions},true)
+    this.addElementToXML('Investment_period',{"years":this.period},true)
+    this.closeElementInXML(); // close input
+
    
     //this. xw.text('Some content');
     //this.xw.endElement();
@@ -420,38 +441,10 @@ marketFactor(market : string, risk : number) {
     this.portfolio = []
     this.portfolio2 =[]
     this.allCosts = []
-    let iPastAsset = 0;
-    let iDeposit = 0;
-    let iPastDeposit = 0;
+    //let iPastAsset = 0;
+    
+    //let iPastDeposit = 0;
     let iCumDeposit = 0;
-
-    let iBadMarketAssets = 0;
-    let iNutralMarketAssets = 0;
-    let iGoodMarketAssets = 0;
-
-
-
-    let iTotalBadMarketCosts = 0;
-    let iTotalNutrakMarketCosts = 0;
-    let iTotalGoodMarketCosts = 0;
-
-    let iBadMarketVariableServiceFee = 0;
-    let iNutralMarketVariableServiceFee = 0;
-    let iGoodMarketVariableServiceFee = 0;
-
-    let iCumBadMarketVariableServiceFee = 0;
-    let iCumNutralMarketVariableServiceFee = 0;
-    let iCumGoodMarketVariableServiceFee = 0;
-
-    let iTotalBadMarketCost = 0;
-    let iTotalNutralMarketCost = 0;
-    let iTotalGoodMarketCost = 0;
-
-    let iCumTotalBadMarketCost = 0;
-    let iCumTotalNutralMarketCost = 0;
-    let iCumTotalGoodMarketCost = 0;
-
-    let iTotalTax = 0;
 
     let iCumTotalTax = 0;
     let iMarketAsset = []
@@ -475,288 +468,114 @@ marketFactor(market : string, risk : number) {
     let iMarketCumCurrencyCost = []
 
     let iMarketTypes = ['bad','nutral','good']
+    let iDeposit = this.oneTimeDeposit + this.recurringDeposit
+
+    
+    
+   
+    
+    
+
+    
+    //console.error(this.overviewArray);
+    iCumDeposit = iDeposit
     for (var i in  iMarketTypes) {
         let market = iMarketTypes[i]
 
         // initialize
-        iCumMarketAsset[market] = 0
+        iCumMarketAsset[market] = iDeposit
         iFixexCumMarketServiceFee[market] = 0
         iCumMarketTxCost[market] = 0
         iCumMarketProdCost[market] = 0
         iMarketAsset[market] = 0
         //iMarketVariableServiceFee[market] = 0
         iCumMarketVariableServiceFee[market]  = 0
-        //iTotalMarketInstrumentCost[market] = 0
-        //iMarketTxCost[market] = 0
-        //iMarketProdCost[market] = 0
-        //console.log(" market asset for",market,":",iCumMarketAsset[market]);
+      
         iFixexCumMarketServiceFee[market] = 0
         
         iGrandTotalCumCost[market] = 0
 
         iMarketCumCurrencyCost[market] = 0
-
+        //console.error("======new map==============")
+        this.overviewArray[market+"_total"] = new Map();
+       
         
     }
-
-
+    this.overviewArray["user_input"]        = new Map();
+   
+    
+    this.record(this.overviewArray["user_input"] ,"Numver_of_transations",this.transactions,true)
+    this.record(this.overviewArray["user_input"] ,"one_time_deposit",this.oneTimeDeposit,true)
+    this.record(this.overviewArray["user_input"] ,"recurrint_deposit",this.recurringDeposit,true)
+    this.record(this.overviewArray["user_input"] ,"years",this.period,true)
+    this.record(this.overviewArray["user_input"] ,"Risk_level",this.riskLevel,true)
 
     let today = new Date();
     //this.xw.startElement('root');
     for (let index = 0; index < this.period; index++) {
       //this.xw.startElement('year');
+     
       
       for (var i in  iMarketTypes) {
         let market = iMarketTypes[i]
-
-        // initialize
-        //iCumMarketAsset[market] = 0
-        //iMarketAsset[market] = 0
         iMarketVariableServiceFee[market] = 0
-        //iCumMarketVariableServiceFee[market]  = 0
         iTotalMarketInstrumentCost[market] = 0
         iMarketTxCost[market] = 0
         iMarketProdCost[market] = 0
         iFixexMarketServiceFee[market] = 0
         iGrandTotalCost[market] = 0
-
         iMarketCurrencyCost[market] = 0
        
         
     }
-      console.log("calculation for year", index)
+      //console.log("calculation for year", index)
       let iyear = this.year(index);
+      //console.error("======new year==============",iyear)
       console.log("calculation for year", iyear)
-      //this.xw.startElement('year');
-      //this.xw.writeAttribute('year', iyear);
-      //this.addElementToXML('year', {'year':iyear});
-      
-      
-      let iDeposit = this.deposit(index, iPastDeposit);
-      iCumDeposit = this.cumDeposit(index - 1, iDeposit);
-      //this.addElementToXML('deposit', {'start':iPastDeposit,'end':iCumDeposit},true);
-      //this.xw.endElement();  // end year
-      iBadMarketAssets += iDeposit;
-      iNutralMarketAssets += iDeposit;
-      iGoodMarketAssets += iDeposit;
-
-      
-      //console.log("    market information ", iMarketAsset)
-      for (var i in  iMarketTypes) {
-        let market = iMarketTypes[i]
   
-          iMarketAsset[market] += iDeposit
-          //console.log("    market information ",iMarketAsset[key])
-          iMarketAsset[market] = iMarketAsset[market] + iMarketAsset[market] * this.marketFactor(market,this.riskLevel);
-          iCumMarketAsset[market] += iMarketAsset[market]
+      
 
-          iMarketVariableServiceFee[market] = this.variableServiceFee(iMarketAsset[market]);
-          iCumMarketVariableServiceFee[market] += iMarketVariableServiceFee[market]
+      this.addElementToXML('Year', {'Year':iyear});
+      this.addElementToXML('Deposits_this_year', {'amount':iDeposit},true);
+     
+      //this.addElementToXML('Cum._Deposit', {'amount':cumDeposit},true);
+     
+     
+      
+      for (var i in  iMarketTypes) {
+       
+        
+        let market = iMarketTypes[i]
 
-          // to do clculate iTotalMarketInstrumentCost of the total value in stead of deposit 
-          // iTotalMarketInstrumentCost[market] = this.instrumentCost(iCumDeposit)
-          iTotalMarketInstrumentCost[market] = this.instrumentCost(iCumDeposit)
-          iMarketTxCost[market] = iTotalMarketInstrumentCost[market][0]
-          iMarketProdCost[market] = iTotalMarketInstrumentCost[market][1]
-
-          iCumMarketTxCost[market] += iMarketTxCost[market]
-          iCumMarketProdCost[market] = iMarketProdCost[market]
-
-          iFixexMarketServiceFee[market] = this.fixexServiceFee(today, iyear);
-          iFixexCumMarketServiceFee[market] += iFixexMarketServiceFee[market]
-
-
-          iGrandTotalCost[market] =  iMarketTxCost[market] + 
-                                      iMarketProdCost[market] + 
-                                      iMarketVariableServiceFee[market] + 
-                                      iFixexCumMarketServiceFee[market]
-
+        this.overviewArray[iyear+market] = new Map();
+        this.overviewArray[iyear+market].set('Deposits_this_year',iDeposit)
+        this.record(this.overviewArray[market + "_total"],"Cum_Deposits",iDeposit)
+        
+        iCumMarketAsset[market] += iCumMarketAsset[market] * this.marketFactor(market,this.riskLevel);
+        this.record(this.overviewArray[market + "_total"],"Cum_MarketAsset",iCumMarketAsset[market],true)
           
-          iGrandTotalCumCost[market] += iGrandTotalCost[market]
-
-          //console.log("    market information ",iMarketAsset[key])
-          //console.log("    market asset for",key,":",iMarketAsset[key]);
+        this.addElementToXML('Market', {'situation':market});
+        this.addElementToXML('Cum_Assets', {'amount':iCumMarketAsset[market]},true);
+        this.overviewArray[iyear+market].set('Cum_assets',iCumMarketAsset[market])
+         // this.addElementToXML('Market', {"Situation":market});
+         //console.error("======call calall==============")
+          this.calall(iyear,iDeposit,iCumDeposit,iCumMarketAsset[market],market) /// replace imaker assets with imaerket cium assets
+           iCumMarketAsset[market] = iCumMarketAsset[market] + this.recurringDeposit
+        
+        this.closeElementInXML()  // close market
+        
       }
+      this.closeElementInXML()  //year
 
-      console.log("    new market assets",iMarketAsset);
-      console.log("    new Cummarket assets",iCumMarketAsset);
-      console.log("    new iMarketVariableServiceFee",iMarketVariableServiceFee);
-      console.log("    new iCumMarketVariableServiceFee",iCumMarketVariableServiceFee);
-      console.log("    new iTotalMarketInstrumentCost",iTotalMarketInstrumentCost);
+        
 
-      console.log("    new iMarketTxCost",iMarketTxCost);
-      console.log("    new iMarketProdCost",iMarketProdCost);
+         
      
-
-      iBadMarketAssets = iBadMarketAssets + iBadMarketAssets * this.marketFactor('bad',this.riskLevel);
-      console.log("    old market bad information ",iBadMarketAssets)
-      iNutralMarketAssets = iNutralMarketAssets + iNutralMarketAssets * this.marketFactor('nutral', this.riskLevel);
-      console.log("    old market nutral information ",iNutralMarketAssets)
-      iGoodMarketAssets = iGoodMarketAssets +iGoodMarketAssets * this.marketFactor('good', this.riskLevel);
-      console.log("    old market good information ",iGoodMarketAssets)
-
-      iBadMarketVariableServiceFee =  this.variableServiceFee(iBadMarketAssets);
-      iNutralMarketVariableServiceFee = this.variableServiceFee(iNutralMarketAssets);
-      iGoodMarketVariableServiceFee = this.variableServiceFee(iGoodMarketAssets);
-
-
-      iCumBadMarketVariableServiceFee += iBadMarketVariableServiceFee;
-      iCumNutralMarketVariableServiceFee += iNutralMarketVariableServiceFee;
-      iCumGoodMarketVariableServiceFee += iGoodMarketVariableServiceFee;
-
-      console.log("calculation Fixed Services Fees");
-      let iFixexServiceFee = this.fixexServiceFee(today, iyear);
-      console.log("calculation Fixed Services Fees",iFixexServiceFee);
-
-      console.log("calculation  Transaction and Product Costs")
-      let iTotalInstrumentCost = this.instrumentCost(iCumDeposit);
-      console.log("calculation  costs", iTotalInstrumentCost)
-      let iTxCost = iTotalInstrumentCost[0]
-      let iProdCost = iTotalInstrumentCost[1]
-      let iTxDiscount = this.txDiscount(iTxCost);
-      let iTax = this.tax * iDeposit;
-      let iCurrencyCost = this.currencyCost * iDeposit;
-      let iTotalFixedCost = + iTxCost - iTxDiscount + iCurrencyCost + iFixexServiceFee + iTax;
-
-      iTotalBadMarketCost = iBadMarketVariableServiceFee + iTotalFixedCost;
-      iTotalNutralMarketCost = iNutralMarketVariableServiceFee + iTotalFixedCost;
-      iTotalGoodMarketCost = iGoodMarketVariableServiceFee + iTotalFixedCost;
-
-      iCumTotalBadMarketCost += iTotalBadMarketCost;
-      iCumTotalNutralMarketCost += iTotalNutralMarketCost;
-      iCumTotalGoodMarketCost += iTotalGoodMarketCost;
-
-
-
-      this.portfolio.push({
-        "year": iyear,
-        "deposit": iDeposit,
-        "cumDeposit": iCumDeposit,
-
-        "badMarketAssets": iBadMarketAssets,
-        "nutralMarketAssets": iNutralMarketAssets,
-        "goodMarketAssets": iGoodMarketAssets,
-
-        "fixedServiceFee": iFixexServiceFee,
-
-        "badMarketVariableServiceFee": iBadMarketVariableServiceFee,
-        "nutralMarketVariableServiceFee": iNutralMarketVariableServiceFee,
-        "goodMarketVariableServiceFee": iGoodMarketVariableServiceFee,
-
-        "cumBadMarketVariableServiceFee": iCumBadMarketVariableServiceFee,
-        "cumNutralMarketVariableServiceFee": iCumNutralMarketVariableServiceFee,
-        "cumGoodMarketVariableServiceFee": iCumGoodMarketVariableServiceFee,
-
-        "totalBadMarketCost": iTotalBadMarketCost,
-        "totalNutralMarketCost": iTotalNutralMarketCost,
-        "totalGoodMarketCost": iTotalGoodMarketCost,
-
-        "cumTotalBadMarketCost": iCumTotalBadMarketCost,
-        "cumTotalNutralMarketCost": iCumTotalNutralMarketCost,
-        "cumTotalGoodMarketCost": iCumTotalGoodMarketCost,
-
-
-        "txCost": iTxCost,
-        "prodCost": iProdCost,
-        "tax": iTax,
-        "currencyCost": iCurrencyCost,
-        "txDiscount": iTxDiscount
-
-      });
-
-
-      console.log( " setting the portfolio",iCumMarketAsset[iMarketTypes[0]])
-     
-      this.portfolio2.push({
-        "year": iyear,
-        "deposit": iDeposit,
-        "cumDeposit": iCumDeposit,
-
-        "badMarketAssets": iMarketAsset['bad'],
-        "nutralMarketAssets": iMarketAsset['nutral'],
-        "goodMarketAssets": iMarketAsset['good'],
-
-        "fixedServiceFee": iFixexServiceFee,
-        "badFixexMarketServiceFee": iFixexMarketServiceFee['bad'],
-        "nutralFixexMarketServiceFee":iFixexMarketServiceFee['nutral'],
-        "goodFixexMarketServiceFee":iFixexMarketServiceFee['good'],
-
-        "badFixexCumMarketServiceFee": iFixexCumMarketServiceFee['bad'],
-        "nutralFixexCumMarketServiceFee":iFixexCumMarketServiceFee['nutral'],
-        "goodFixexCumMarketServiceFee":iFixexCumMarketServiceFee['good'],
-
-        "badMarketVariableServiceFee": iMarketVariableServiceFee['bad'],
-        "nutralMarketVariableServiceFee": iMarketVariableServiceFee['nutral'],
-        "goodMarketVariableServiceFee": iMarketVariableServiceFee['good'],
-
-        "cumBadMarketVariableServiceFee": iCumMarketVariableServiceFee['bad'],
-        "cumNutralMarketVariableServiceFee": iCumMarketVariableServiceFee['nutral'],
-        "cumGoodMarketVariableServiceFee": iCumMarketVariableServiceFee['good'],
-
-        "totalBadMarketCost": iGrandTotalCost['bad'],
-        "totalNutralMarketCost": iGrandTotalCost['nutral'],
-        "totalGoodMarketCost": iGrandTotalCost['good'],
-
-        "cumTotalBadMarketCost": iGrandTotalCumCost['bad'],
-        "cumTotalNutralMarketCost": iGrandTotalCumCost['nutral'],
-        "cumTotalGoodMarketCost": iGrandTotalCumCost['good'],
-
-
-        
-        "txBadMarketCost": iMarketTxCost['bad'],
-        "txNutralMarketCost": iMarketTxCost['nutral'],
-        "txGoodMarketCost": iMarketTxCost['good'],
-
-        
-        "badMarketProdCost": iMarketProdCost['bad'],
-        "nutralMarketProdCost": iMarketProdCost['nutral'],
-        "goodMarketProdCost": iMarketProdCost['good'],
-
-        "tax": iTax,
-        
-        "currencyCost": iCurrencyCost,
-        "badMarketCurrencyCost": iMarketCurrencyCost['bad'],
-        "nutralMarketCurrencyCost": iMarketCurrencyCost['bad'],
-        "goodarketCurrencyCost": iMarketCurrencyCost['bad'],
-
-        "txDiscount": iTxDiscount
-
-      });
-
-
-      this.calall(iyear,iDeposit,iCumDeposit,iMarketAsset['bad'],)
-      iPastDeposit = iCumDeposit;
-      this.cumTotalDeposit = iCumDeposit;
-      //this.xw.endElement('year');
-      //this.xw.text('Some content');
+      iDeposit = this.recurringDeposit
+      iCumDeposit += iDeposit
     }
-    //this.xw.endElement('root');
-    //this.xw.flush();
-    //this.xw.endDocument();
-    
-   
-
-    this.cumTotalBadMarketAssets = iBadMarketAssets;
-    this.cumTotalNutralMarketAssets = iNutralMarketAssets;
-    this.cumTotalGoodMarketAssets = iGoodMarketAssets;
-    this.cumTotalBadMarketCosts = iCumTotalBadMarketCost;
-    this.cumTotalNutralMarketCosts = iCumTotalNutralMarketCost;
-    this.cumTotalGoodMarketCosts = iCumTotalGoodMarketCost;
-    
-     
-    /*this.barChartData = [
-      this.cumTotalBadMarketAssets - this.cumTotalBadMarketCosts ,
-      this.cumTotalNutralMarketAssets - this.cumTotalNutralMarketCosts ,
-      this.cumTotalGoodMarketAssets - this.cumTotalGoodMarketCosts ];
-  */
- /*
- this.barChartData = [
-    {data : [this.cumTotalBadMarketAssets -     this.cumTotalBadMarketCosts,      this.cumTotalBadMarketCosts], label: "Bad"},
-    {data : [this.cumTotalNutralMarketAssets -  this.cumTotalNutralMarketCosts ,  this.cumTotalNutralMarketCosts ], label : "Nutral"},
-    {data : [this.cumTotalGoodMarketAssets -    this.cumTotalGoodMarketCosts ,    this.cumTotalGoodMarketCosts ], label : "Good"}];
-
-  }
-*/
+  
+  /*
   this.barChartData = [
     {data : [this.cumTotalBadMarketAssets,    this.cumTotalNutralMarketAssets,      this.cumTotalGoodMarketAssets], 
       label: "Assets",
@@ -766,20 +585,55 @@ marketFactor(market : string, risk : number) {
       backgroundColor: 'rgba(60, 60, 80, 0.1)'
     }
   ];
+
+  this.overviewArray["bad_total"].get("Cum_MarketAsset")
+
+  */
+ for (var i in  iMarketTypes) {
+    console.error(this.overviewArray["bad_total"].keys())
+    let keys = this.overviewArray["bad_total"].keys()
+    let total = 0
+    console.error("total",total)
+    this.overviewArray[iMarketTypes[i]+"_total"].forEach(function(v, k) {
+      if (k.substring(0, 4) == "Cat_") {
+        total += v
+        console.error("total",total)
+      }      
+    })
+    this.record(this.overviewArray[iMarketTypes[i] + "_total"],"Toal_Cum_Cost",total,true)
+      
+  }
+   
+  this.barChartData = [
+    {data : [this.overviewArray["bad_total"].get("Cum_MarketAsset"),    this.overviewArray["nutral_total"].get("Cum_MarketAsset"),      this.overviewArray["good_total"].get("Cum_MarketAsset")], 
+      label: "Assets",
+      backgroundColor: 'window.chartColors.blue'},
+    {data : [this.overviewArray["bad_total"].get("Toal_Cum_Cost") , 
+             this.overviewArray["nutral_total"].get("Toal_Cum_Cost") , 
+             this.overviewArray["good_total"].get("Toal_Cum_Cost")
+            ], 
+      label : "Costs",
+      backgroundColor: 'rgba(60, 60, 80, 0.1)'
+    }
+  ];
   this.xw.endDocument();
   this.overviewXML= beautify(this.xw.toString());
-    console.error(beautify(this.xw.toString()));
- 
+   // console.log(beautify(this.xw.toString()));
+  console.error(this.overviewArray)
 }
 
-calPrice({ year, costElement, amount, units = 1 }: { year: number; costElement: any; amount: number; units?: number; }):any {
+calPrice({ year, costElement, amount, units = 1,market }: { year: number; costElement: any; amount: number; units?: number;market : string }):any {
   console.log("    calculatoin price_new");
   console.log("    year",year);
   console.log("    costElement",costElement);
   console.log("    amount/assets",amount);
+  console.log("    costElement.price",costElement.price);
   
   
   let cost = amount * costElement.price
+
+  console.log("    Initial Cost",cost);
+  
   if (typeof costElement.costName !== 'undefined') { //staring cost apply
     
     this.xw.writeAttribute('Cost_Name', costElement.costName );
@@ -807,7 +661,7 @@ calPrice({ year, costElement, amount, units = 1 }: { year: number; costElement: 
   if (typeof costElement.maxCost !== 'undefined') { //minimum cost apply
     cost = Math.min(costElement.maxCost,cost)
     this.xw.writeAttribute('Maximum_Cost', costElement.maxCost);
-    console.log("    after applaying max cost per unir",cost);
+    console.log("    after applaying max cost per unit",cost);
   }
   
   
@@ -818,32 +672,26 @@ calPrice({ year, costElement, amount, units = 1 }: { year: number; costElement: 
   this.addElementToXML('Cost_amount', {'amount':cost},true);
   console.log("    after applaying number of transaction",cost);
   
+  this.record(this.overviewArray[year+market ],costElement.costName,cost)
+  this.record(this.overviewArray[year+market ],"Cat_"+costElement.costType2,cost)
+  this.record(this.overviewArray[market + "_total"],costElement.costName,cost)
+  this.record(this.overviewArray[market + "_total"],"Cat_"+costElement.costType2,cost)
+  
+  //console.error(" mmmmm",this.overviewArray[market + "_total"])   
+  //console.error(" mmmmm",costElement.costName)       
+  
   return {"year":year,"amount":cost,"costName":costElement.costName, "costType":costElement.costType2}
 }
 
 
 
-// xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-// xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-// xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-// xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-// xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-// xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
-
-
-calall(year,deposit,cumDeposit,cumAssets){
+calall(year,deposit,cumDeposit,cumAssets,market){
   const logging = true
 
-  this.addElementToXML('Year', {'Year':year});
-  this.addElementToXML('Deposits_this_year', {'amount':deposit},true);
-  this.addElementToXML('Cum._Deposit', {'amount':cumDeposit},true);
-  this.addElementToXML('Cum._Assets', {'amount':cumAssets},true);
-  
+ 
         
-  console.log("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
-  console.log("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
-  console.log("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
+  
   console.log("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
   console.log("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
   console.log("XXXXX deposit",deposit)
@@ -870,18 +718,19 @@ calall(year,deposit,cumDeposit,cumAssets){
         
         //const assetAllocation = this.assetAllocationList.filter(asset => costElement.instrumentName == asset.assetName)
         if (typeof assetAllocation !== 'undefined' ) {
-          this.console_log("XXXXX allocation" + assetAllocation[0],logging,5,"M")
+          //this.console_log("XXXXX allocation" + assetAllocation[0],logging,5,"M")
           this.xw.writeAttribute('Instrument_name', costElement.instrumentName);
           //this.xw.writeAttribute('Asset_allocation_fraction', assetAllocation[0].percentage);
           
           let iNumberOfTransactionsInThisInstrument = this.transactions * assetAllocation[0].percentage;
           let iSingleOrderTransactionAmountInThisInstrument = (this.productOptions.transactionCostPercentage * assetAllocation[0].percentage * cumAssets ) / this.transactions 
 
-          this.allCosts.push(this.calPrice({ year, costElement, amount: iSingleOrderTransactionAmountInThisInstrument, units: iNumberOfTransactionsInThisInstrument }));
+          this.allCosts.push(this.calPrice({ year, costElement, amount: iSingleOrderTransactionAmountInThisInstrument, units: iNumberOfTransactionsInThisInstrument,market }));
+          
           
           console.log("XXXXX allCost", this.allCosts)
         } else {
-          this.console_log("error no asset allocation found for Instrument cost element:" + costElement.instrumentName ,logging,5,"M")
+        //  this.console_log("error no asset allocation found for Instrument cost element:" + costElement.instrumentName ,logging,5,"M")
         }
         console.log("XXXXX assetallocation for (",costElement.instrumentName,") ==>", assetAllocation)
 
@@ -895,17 +744,17 @@ calall(year,deposit,cumDeposit,cumAssets){
         console.log("XXXXX Product Releated Cost",costElement)
         console.log("XXXXX Cost Name",costElement.costName)
         if (typeof assetAllocation !== 'undefined' ) {
-          this.console_log("XXXXX allocation" + assetAllocation[0],logging,5,"M")
+        //  this.console_log("XXXXX allocation" + assetAllocation[0],logging,5,"M")
 
           let iamount =  assetAllocation[0].percentage * cumAssets 
           this.xw.writeAttribute('Instrument_name', costElement.instrumentName);
           this.xw.writeAttribute('Asset_allocation', assetAllocation[0].percentage);
-          this.allCosts.push(this.calPrice({ year, costElement, amount: iamount, units: 1 }));
+          this.allCosts.push(this.calPrice({ year, costElement, amount: iamount, units: 1 ,market}));
           console.log("XXXXX allCost", this.allCosts)
           
           
         } else {
-          this.console_log("error no asset allocation found for Instrument cost element:" + costElement.instrumentName ,logging,5,"M")
+          //.console_log("error no asset allocation found for Instrument cost element:" + costElement.instrumentName ,logging,5,"M")
         }
         console.log("XXXXX assetallocation for (",costElement.instrumentName,") ==>", assetAllocation)
 
@@ -921,7 +770,7 @@ calall(year,deposit,cumDeposit,cumAssets){
         this.xw.writeAttribute('Amount_in_Band', partInThisLevel);
 
         let iresult = [] 
-        iresult = this.calPrice({ year, costElement, amount: partInThisLevel, units: 1 })
+        this.calPrice({ year, costElement, amount: partInThisLevel, units: 1 ,market})
         if (iresult["amount"] > 0) {
           this.allCosts.push(iresult);
         }
@@ -939,7 +788,8 @@ calall(year,deposit,cumDeposit,cumAssets){
     
   });
   this.xw.endElement()  // cost list
-  this.xw.endElement()  // year
+ // this.xw.endElement()  // end market
+ // this.xw.endElement()  // year
 
 }
 
@@ -950,54 +800,8 @@ calall(year,deposit,cumDeposit,cumAssets){
     return this.startyear + i;
   }
 
-  /*asset (i: number,iStartAsset){
-    let asset = 0;
-    if (i==0) 
-       asset = this.oneTimeDeposit;
-    asset +=  this.recurringDeposit;  // multiply by * 12 is period is one month
-    return  asset; 
-  }
-*/
-  deposit(i: number, iStartAsset) {
-    let deposit = 0;
-    if (i == 0)
-      deposit = this.oneTimeDeposit;
-    deposit += this.recurringDeposit;  // multiply by * 12 is period is one month
-    return deposit;
-  }
 
-  
-
-  /*
-    cumAsset (i,a) {
-      let asset = a;
-      if (i>=0)
-        asset += this.portfolio[i].cumAsset;
-  
-      return asset;
-    }
-  */
-  cumDeposit(i, a) {
-    let deposit = a;
-    if (i >= 0)
-      deposit += this.portfolio[i].cumDeposit;
-
-    return deposit;
-  }
-
-  fixexServiceFee(d: Date, year) {
-    console.log("   fixexServiceFee ",d.getFullYear());
-    console.log("   fixexServiceFee ",this.fixedMonthlyServiceFee);
-    let ifixexServiceFee = 0;
-
-    if (d.getFullYear() == year) {            
-      ifixexServiceFee = (12 - d.getMonth()) * this.fixedMonthlyServiceFee;
-    } else {
-      ifixexServiceFee = 12 * this.fixedMonthlyServiceFee;
-    }
-    return ifixexServiceFee;
-  }
-
+ 
   partInlevel (l,u,x):number {  // l = lower limt   u = upper limt     x= assets
     if (x>=u) { /// assets more than upper limit of this level
       return u-l  // send the complet band with of this level
@@ -1011,62 +815,6 @@ calall(year,deposit,cumDeposit,cumAssets){
     }
 
 
-  }
-
-  variableServiceFee(totalAsset: number) {
-    console.log("calculation Service Fee for ",totalAsset)
-    let ivariableServiceFeeLevels = this.variableServiceFeeLevels
-    let cumLevelServicesFee = 0
-    if (true) {
-      
-      for (let index = 0; index < ivariableServiceFeeLevels.length; index++) {
-        
-        let partInThisLevel = this.partInlevel(ivariableServiceFeeLevels[index].lowerBand,ivariableServiceFeeLevels[index].upperBand,totalAsset);
-        
-        console.log("   looping though services fee levels",index,"of",ivariableServiceFeeLevels.length)
-        console.log("   this level (",totalAsset,") lowwer (",ivariableServiceFeeLevels[index].lowerBand,") upper (",ivariableServiceFeeLevels[index].upperBand,")");
-        console.log("   this level fee",ivariableServiceFeeLevels[index].fee)
-        console.log("   part in this level",partInThisLevel);
-        let levelServicesFee = partInThisLevel * ivariableServiceFeeLevels[index].fee
-        console.log("   Services fee for this level ",levelServicesFee);
-        cumLevelServicesFee =  cumLevelServicesFee +  levelServicesFee;
-        console.log("   Cum. Services fee for this level ",cumLevelServicesFee);
-        
-      }
-    } else {
-      console.log("     no variableServiceFeeLevels defined")
-    }
-
-    return cumLevelServicesFee;
-  }
-
-  txDiscount(txCost) {
-    let iTxDiscount = 0;
-
-    if (this.discountLevels) {
-      for (let index = 0; index < this.discountLevels.length; index++) {
-        let iDiscountLevel = this.discountLevels[index];
-
-        if (txCost > iDiscountLevel.lowerBand) { // dicount applies
-          if (txCost > iDiscountLevel.upperBand) { //full discount applies
-
-            iTxDiscount += (iDiscountLevel.upperBand - iDiscountLevel.lowerBand) * iDiscountLevel.variableDiscount;
-
-
-
-
-          } else { //some discount applies
-            iTxDiscount += (txCost - iDiscountLevel.lowerBand) * iDiscountLevel.variableDiscount;
-
-
-          }
-        }
-
-
-
-      }
-    }
-    return iTxDiscount;
   }
 
   getAssetAllocation ():any[] {
@@ -1104,176 +852,7 @@ calall(year,deposit,cumDeposit,cumAssets){
   
 
 
-  instrumentCost(totalAsset: number) {
-    //console.log("start txCost")
-    let icost = 0;
-    let iPCost = 0;
-    let itax = 0;
-    let iDiscount = 0;
-    //console.log(this.assetAllocationList);
-
-
-    //Lets get the right asset mix from the assetAllocationListForAllRisks
-    //console.log("Risk associated asset allocation list");
-    //console.log(this.assetAllocationListForAllRisks);
-
-
-    console.log(" calulating transactions cost for product ",this.product)
   
-  
-    this.assetAllocationList = this.getAssetAllocation()
-  
-
-    console.log(" calulating transactions cost for ",this.product," and for  ",this.assetAllocationList.length, "Assets")
-    console.log(" Asset llocation",this.assetAllocationList)
-   
-    // def: instrument is a type of stock
-    // def: asset is a stock that is part of a portfolio
-    //
-    // loop(1) through the list of asset allocations in the example portfolio based on product and risk level
-    // for each element(instrument) in the example portfolio get the list off prices that are associated with that asses based on its name
-    // loop 2 though that list of prices and calculat the price of the 
-    // 
-
-
-
-
-    console.log( " lets iterate over the assets that are alocated")
-    for (let index = 0; index < this.assetAllocationList.length; index++) {
-      console.log( "   asset number",index + 1)
-      const assetAllocation = this.assetAllocationList[index];
-
-      console.log("     Looking for the right price list in", this.priceList);
-      console.log("     identified by: ", assetAllocation.assetName);
-      
-      const instrumentPricesInfo = this.priceList.filter(instrument => instrument.instrumentName == assetAllocation.assetName);
-      
-      console.log("     instrument price Information array", instrumentPricesInfo)
-
-      
-      // make sure a instrument type can have more than one cost by handling an array as a result from the filte
-      console.log("     Name", assetAllocation.assetName);
-      console.log("     share of portfolio:", assetAllocation.percentage);
-      console.log("     Instrument price infor:", instrumentPricesInfo);
-      
-
-      
-      if (instrumentPricesInfo.length > 0) {
-        console.log("yes! instrumentPricesInfo lenght > 0")
-        let instrumentPrice = instrumentPricesInfo[0];
-        console.log("     Instrument price infor:", instrumentPrice);
-        
-        
-        if (instrumentPrice.transactionCostPercentage > 0) {
-
-         
-             console.log("     Transaction Cost apply for this intrument");
-             console.log("     Cost is ", instrumentPrice.transactionCostPercentage," of single order amount ");
-            //console.log("variable cost <===");
-            //console.log(this.transactions);
-
-            
-            console.log ("     Order number")
-            console.log ("       Total number of transactions in this portfolio:" , this.transactions );
-            let iNumberOfTransactionsInThisInstrument = this.transactions * assetAllocation.percentage;
-            console.log ("       Number of transactions allocated to this instrument ==> #tx (",this.transactions,") * asset allocation (",assetAllocation.percentage,") = " , iNumberOfTransactionsInThisInstrument );
-            console.log ("     Order number ===> ", iNumberOfTransactionsInThisInstrument)
-            
-            console.log ("     Order amount")
-            console.log ("       Assets till now " , totalAsset );
-            console.log ("       part of assets concerend with ordering each year = " , this.productOptions.transactionCostPercentage );
-            let iTotalOrderAmount = this.productOptions.transactionCostPercentage * totalAsset;
-            console.log ("       Assets in orders (assets * % of assests in orders) ", iTotalOrderAmount)
-            let iTotalInstrumentOrderAmount = iTotalOrderAmount / assetAllocation.percentage;
-            console.log ("       Assets in orders in this instrument (Assets in orders",iTotalOrderAmount," / assetAllocation.percentage",assetAllocation.percentage,") ", iTotalInstrumentOrderAmount) 
-            let iSingleTransactionAmount = (this.productOptions.transactionCostPercentage * totalAsset ) / this.transactions
-            console.log ("       Single Order Amount in this" ,iSingleTransactionAmount)
-            console.log ("       Order amount ====>", iSingleTransactionAmount)
-
-            console.log ("     Price")
-            console.log ("        Variable price is ", instrumentPrice.transactionCostPercentage," of each order amount (",iSingleTransactionAmount,")");
-            let iVariableOrderCost = instrumentPrice.transactionCostPercentage * iSingleTransactionAmount
-            console.log ("        Variable price is ", iVariableOrderCost);
-
-            let iStartingCost = 0;
-            if (instrumentPrice.startingCost) {
-              iStartingCost =instrumentPrice.startingCost;
-              console.log("        It has a Staring Price of", instrumentPrice.startingCost);
-              
-            }
-
-            let iSingleOrderCost = instrumentPrice.startingCost + iVariableOrderCost
-            console.log ("        Single order Cost  ",iSingleOrderCost)
-
-
-            console.log ("        Instrument Minimum Price is ",instrumentPrice.minCost)
-            console.log ("        Instrument Maximum Price is ",instrumentPrice.maxCost,typeof instrumentPrice.maxCost)
-
-
-            let iFinalSingleOrderCost = iSingleOrderCost
-            
-            if (typeof instrumentPrice.minCost !== 'undefined'){  
-              iFinalSingleOrderCost = Math.max(iFinalSingleOrderCost, instrumentPrice.minCost)
-            
-            }  
-
-
-            if (typeof instrumentPrice.maxCost !== 'undefined'){   
-              iFinalSingleOrderCost = Math.min(iFinalSingleOrderCost, instrumentPrice.maxCost)
-            }
-
-            console.log ("        Final single order price is (including min,max) ", iFinalSingleOrderCost)
-            
-            let iTotalInstrumentCost = iFinalSingleOrderCost * iNumberOfTransactionsInThisInstrument
-            console.log ("        Total order Cost in this instrument is ", iTotalInstrumentCost)
-            console.log ("        (Single Order Cost (",iFinalSingleOrderCost,") * #Tx in this instrument (",iNumberOfTransactionsInThisInstrument,"))= ")
-            console.log ("        Price ===> ", iTotalInstrumentCost)
-
-            
-            
-            icost += iTotalInstrumentCost
-            console.log ("      ====> Total Order cost cost of ",index + 1," out of ",this.assetAllocationList.length," instuments  ===> ", icost)
-            //console.log(icost);
-            console.log ("      =================================");
-            
-
-
-        }
-        if (instrumentPrice.productCostPercentage > 0) {
-          console.log("     Running Product Cost of (",instrumentPrice.productCostPercentage,") apply for this intrument");
-          console.log("     Asset allocation is (",assetAllocation.percentage,")");
-          console.log("     Assetis till now (",totalAsset,") apply for this intrument");
-          iPCost = instrumentPrice.productCostPercentage * totalAsset * assetAllocation.percentage
-          console.log("     Product Cost for this year  (",iPCost,") ");
-        }
-
-      
-       let iTaxCosts = 0
-       if (typeof instrumentPrice.taxCost !== 'undefined') {
-          console.log("     For this instument there are tax Cost of (",instrumentPrice.taxCost,") apply for this intrument");
-          console.log("     Asset allocation is (",assetAllocation.percentage,")");
-          console.log("     Assetis till now (",totalAsset,") apply for this intrument");
-          iTaxCosts = instrumentPrice.taxCost * totalAsset * assetAllocation.percentage
-          console.log("     instrumentPrice.taxCost  (",iTaxCosts,") ");
-        }
-        break;
-
-      } 
-      
-
-
-    }
-    console.log("    returning cost ",[icost,iPCost])
-    return [icost,iPCost];
-  }
-
-  console_log(message:string,log=true,level=5,c="-"){
-    if (log){
-      console.log(c.repeat(level),message)
-    }
-      
-  }
-
 }
 //// hi
 
